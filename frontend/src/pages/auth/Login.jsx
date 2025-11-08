@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext.jsx";
+import AuthLayout from "../../components/AuthLayout.jsx";
 
 export default function Login() {
   const { login } = useAuth();
@@ -27,22 +28,18 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 p-6">
-      <form onSubmit={handleSubmit} className="bg-white w-full max-w-md shadow rounded-xl p-6 space-y-4">
-        <h1 className="text-2xl font-bold text-indigo-700">Library Login</h1>
+    <AuthLayout title="Welcome Back" subtitle="Sign in to your account">
+      {error && <div className="bg-red-50 border border-red-200 text-red-700 p-2 rounded mb-4">{error}</div>}
 
-        {error && (
-          <div className="bg-red-50 border border-red-200 text-red-700 p-2 rounded">{error}</div>
-        )}
-
-        <div className="space-y-1">
+      <form onSubmit={handleSubmit} className="space-y-4">
+        <div>
           <label htmlFor="email" className="text-sm text-gray-600">Email</label>
-          <input id="email" type="email" name="email" placeholder="you@example.com" value={form.email} onChange={handleChange} className="w-full border rounded-lg p-2" required />
+          <input id="email" type="email" name="email" placeholder="you@example.com" value={form.email} onChange={handleChange} className="w-full border rounded-lg p-2 mt-1" required />
         </div>
 
-        <div className="space-y-1">
+        <div>
           <label htmlFor="password" className="text-sm text-gray-600">Password</label>
-          <input id="password" type="password" name="password" placeholder="••••••••" value={form.password} onChange={handleChange} className="w-full border rounded-lg p-2" required />
+          <input id="password" type="password" name="password" placeholder="••••••••" value={form.password} onChange={handleChange} className="w-full border rounded-lg p-2 mt-1" required />
         </div>
 
         <div className="flex items-center justify-between">
@@ -53,6 +50,6 @@ export default function Login() {
 
         <p className="mt-4 text-sm text-gray-600">Don't have an account? <Link to="/auth/register" className="text-indigo-600">Register</Link></p>
       </form>
-    </div>
+    </AuthLayout>
   );
 }
