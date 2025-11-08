@@ -1,25 +1,28 @@
-import React, { useState, useContext } from "react";
+import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import { AuthContext } from "../../context/AuthContext.jsx";
+import { useAuth } from "../../context/AuthContext.jsx";
 
 export default function Register() {
-  const { register } = useContext(AuthContext);
+  const { register } = useAuth();
   const navigate = useNavigate();
   const [form, setForm] = useState({ name: "", email: "", password: "", role: "user" });
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
+    setLoading(true);
     try {
-      register(form);
-      // redirect based on role
-      if (form.role === "admin") navigate("/admin/dashboard");
+      const user = await register(form);
+      if (user?.role === "admin") navigate("/admin/dashboard");
       else navigate("/dashboard");
     } catch (err) {
       setError(err.message || "Registration failed");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -52,7 +55,7 @@ export default function Register() {
           </select>
         </label>
 
-        <button type="submit" className="w-full bg-indigo-600 text-white py-2 rounded">Register</button>
+  <button type="submit" disabled={loading} className="w-full bg-indigo-600 disabled:opacity-50 text-white py-2 rounded">{loading ? "Creating..." : "Register"}</button>
 
         <p className="mt-4 text-sm text-gray-600">
           Already have an account? <Link to="/auth/login" className="text-indigo-600">Login</Link>

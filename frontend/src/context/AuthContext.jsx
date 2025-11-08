@@ -1,6 +1,11 @@
 import React, { createContext, useContext, useEffect, useMemo, useState } from "react";
+import axios from "axios";
 
 export const AuthContext = createContext(null);
+
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
+
+const api = axios.create({ baseURL: API_URL });
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(() => {
@@ -11,30 +16,60 @@ export function AuthProvider({ children }) {
     }
   });
 
+  const [token, setToken] = useState(() => localStorage.getItem("authToken") || null);
+
+  // attach token to axios instance when available
+  useEffect(() => {
+    if (token) {
+      localStorage.setItem("authToken", token);
+      api.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+    } else {
+      localStorage.removeItem("authToken");
+      delete api.defaults.headers.common["Authorization"];
+    }
+  }, [token]);
+
   useEffect(() => {
     if (user) localStorage.setItem("authUser", JSON.stringify(user));
     else localStorage.removeItem("authUser");
   }, [user]);
 
-  const register = ({ name, email, password, role = "user" }) => {
-    const users = JSON.parse(localStorage.getItem("users") || "[]");
-    if (users.some((u) => u.email === email)) throw new Error("A user with that email already exists.");
-    const newUser = { id: Date.now(), name, email, password, role };
-    users.push(newUser);
-    localStorage.setItem("users", JSON.stringify(users));
-    setUser({ id: newUser.id, name: newUser.name, email: newUser.email, role: newUser.role });
+  // Register: call backend, then auto-login to obtain token
+  const register = async ({ name, email, password, role = "user" }) => {
+    try {
+      await api.post("/api/auth/register", { name, email, password, role });
+      // auto-login after successful register to get token
+      const res = await api.post("/api/auth/login", { email, password });
+      const { token: t, user: u } = res.data;
+      setToken(t);
+      setUser(u);
+      return u;
+    } catch (err) {
+      // normalize error
+      const message = err?.response?.data?.message || err.message || "Registration failed";
+      throw new Error(message);
+    }
   };
 
-  const login = (email, password) => {
-    const users = JSON.parse(localStorage.getItem("users") || "[]");
-    const found = users.find((u) => u.email === email && u.password === password);
-    if (!found) throw new Error("Invalid email or password.");
-    setUser({ id: found.id, name: found.name, email: found.email, role: found.role });
+  const login = async (email, password) => {
+    try {
+      const res = await api.post("/api/auth/login", { email, password });
+      const { token: t, user: u } = res.data;
+      setToken(t);
+      setUser(u);
+      return u;
+    } catch (err) {
+      const message = err?.response?.data?.message || err.message || "Login failed";
+      throw new Error(message);
+    }
   };
 
-  const logout = () => setUser(null);
+  const logout = () => {
+    setToken(null);
+    setUser(null);
+  };
 
-  const value = useMemo(() => ({ user, register, login, logout }), [user]);
+  const value = useMemo(() => ({ user, token, register, login, logout, api }), [user, token]);
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
