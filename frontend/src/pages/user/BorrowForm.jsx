@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import api from "../../api/axios";
 import { useAuth } from "../../context/AuthContext";
+import { Link } from "react-router-dom";
 
 export default function BorrowForm() {
   const { user } = useAuth();
@@ -60,13 +61,19 @@ export default function BorrowForm() {
             ))}
           </select>
 
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full bg-indigo-600 hover:bg-indigo-700 text-white p-3 rounded-lg disabled:opacity-60"
-          >
-            {loading ? "Borrowing…" : "Borrow"}
-          </button>
+          <div className="flex gap-3">
+            <button
+              type="submit"
+              disabled={loading}
+              className="flex-1 bg-indigo-600 hover:bg-indigo-700 text-white p-3 rounded-lg disabled:opacity-60 text-center"
+            >
+              {loading ? "Borrowing…" : "Borrow"}
+            </button>
+
+            <Link to="/dashboard" className="flex-1 text-center border border-gray-200 hover:shadow px-3 py-3 rounded-lg">
+              Back to Dashboard
+            </Link>
+          </div>
         </form>
         {message && <p className="mt-3 text-sm text-gray-700 text-center">{message}</p>}
       </div>

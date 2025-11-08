@@ -26,11 +26,14 @@ import Overdue from "./pages/user/Overdue.jsx";
 // Shared (placeholders)
 
 import { AuthProvider } from "./context/AuthContext.jsx";
+import Footer from "./components/Footer";
 
 export default function App() {
   return (
     <AuthProvider>
-      <Routes>
+      <div className="min-h-screen flex flex-col">
+        <main className="flex-1">
+          <Routes>
         {/* Auth */}
         <Route path="/auth/login" element={<Login />} />
   <Route path="/auth/forgot-password" element={<ForgotPassword />} />
@@ -138,9 +141,12 @@ export default function App() {
           }
         />
 
-        {/* Default */}
-        <Route path="/" element={<Navigate to="/auth/login" replace />} />
-      </Routes>
+            {/* Default */}
+            <Route path="/" element={<Navigate to="/auth/login" replace />} />
+          </Routes>
+        </main>
+        <Footer />
+      </div>
     </AuthProvider>
   );
 }
