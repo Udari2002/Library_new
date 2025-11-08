@@ -2,6 +2,8 @@
 import Navbar from "../../components/Navbar";
 import Sidebar from "../../components/Sidebar";
 import StatsCard from "../../components/StatsCard";
+import LibraryPieChart from "../../components/PieChart";
+import DataTable from "../../components/DataTable";
 
 export default function Dashboard() {
   return (
@@ -33,6 +35,12 @@ export default function Dashboard() {
               This section will later display recent borrow and return transactions.
             </p>
           </section>
+
+          {/* Chart + Table */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <LibraryPieChart />
+            <DataTable />
+          </div>
         </main>
       </div>
     </div>
