@@ -2,17 +2,29 @@
 import { NavLink } from "react-router-dom";
 import { useState } from "react";
 import { Menu, X } from "lucide-react"; // icon library from lucide-react
+import { useAuth } from "../context/AuthContext.jsx";
 
 export default function Sidebar() {
   const [open, setOpen] = useState(false);
 
-  const menu = [
+  const { user } = useAuth();
+
+  const adminMenu = [
     { name: "Dashboard", path: "/admin/dashboard" },
     { name: "Books", path: "/admin/books" },
     { name: "Users", path: "/admin/users" },
     { name: "Borrowed", path: "/admin/borrowed" },
     { name: "Returned", path: "/admin/returned" },
     { name: "Overdue", path: "/admin/overdue" },
+  ];
+
+  const userMenu = [
+    { name: "Dashboard", path: "/dashboard" },
+    { name: "Books", path: "/user/books" },
+    { name: "Borrow", path: "/user/borrow" },
+    { name: "Borrowed", path: "/user/borrowed" },
+    { name: "Returned", path: "/user/returned" },
+    { name: "Overdue", path: "/user/overdue" },
   ];
 
   return (
@@ -51,7 +63,7 @@ export default function Sidebar() {
         {/* Menu */}
         <nav className="mt-4 flex-1 overflow-auto px-1">
           <ul className="space-y-2">
-            {menu.map((item) => (
+            {(user?.role === "admin" ? adminMenu : userMenu).map((item) => (
               <li key={item.name}>
                 <NavLink
                   to={item.path}

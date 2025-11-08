@@ -1,10 +1,10 @@
 /* eslint-disable react/prop-types */
-import React, { useContext } from "react";
+import React from "react";
 import { Navigate } from "react-router-dom";
-import { AuthContext } from "../context/AuthContext.jsx";
+import { useAuth } from "../context/AuthContext.jsx";
 
 export default function ProtectedRoute({ children, allowedRoles }) {
-  const { user } = useContext(AuthContext);
+  const { user } = useAuth();
 
   if (!user) return <Navigate to="/auth/login" replace />;
 

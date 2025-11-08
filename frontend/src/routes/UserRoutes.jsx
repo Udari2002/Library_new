@@ -13,7 +13,7 @@ import Overdue from "../pages/user/Overdue.jsx";
 export default function UserRoutes() {
   return (
     <Routes>
-      <Route element={<ProtectedRoute allowRoles={["user"]} />}>
+      <Route element={<ProtectedRoute allowedRoles={["user"]} />}>
         <Route path="/user/dashboard" element={<UserDashboard />} />
         <Route path="/user/books" element={<BookList />} />
         <Route path="/user/borrow" element={<BorrowForm />} />

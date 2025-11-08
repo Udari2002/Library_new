@@ -11,7 +11,7 @@ import Reports from "../pages/admin/Reports.jsx";
 export default function AdminRoutes() {
   return (
     <Routes>
-      <Route element={<ProtectedRoute allowRoles={["admin"]} />}>
+      <Route element={<ProtectedRoute allowedRoles={["admin"]} />}>
         <Route path="/admin/dashboard" element={<AdminDashboard />} />
         <Route path="/admin/books" element={<ManageBooks />} />
         <Route path="/admin/users" element={<ManageUsers />} />

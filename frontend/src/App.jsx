@@ -5,6 +5,7 @@ import ProtectedRoute from "./routes/ProtectedRoute.jsx";
 // Auth
 import Login from "./pages/auth/Login.jsx";
 import Register from "./pages/auth/Register.jsx";
+import ForgotPassword from "./pages/auth/ForgotPassword.jsx";
 
 // Admin Pages
 import AdminDashboard from "./pages/admin/Dashboard.jsx";
@@ -16,6 +17,11 @@ import OverdueBooks from "./pages/admin/OverdueBooks.jsx";
 
 // User Pages
 import UserDashboard from "./pages/user/Dashboard.jsx";
+import BookList from "./pages/user/BookList.jsx";
+import BorrowForm from "./pages/user/BorrowForm.jsx";
+import Borrowed from "./pages/user/Borrowed.jsx";
+import Returned from "./pages/user/Returned.jsx";
+import Overdue from "./pages/user/Overdue.jsx";
 
 // Shared (placeholders)
 
@@ -27,6 +33,7 @@ export default function App() {
       <Routes>
         {/* Auth */}
         <Route path="/auth/login" element={<Login />} />
+  <Route path="/auth/forgot-password" element={<ForgotPassword />} />
         <Route path="/auth/register" element={<Register />} />
 
         {/* Admin protected route */}
@@ -85,6 +92,48 @@ export default function App() {
           element={
             <ProtectedRoute allowedRoles={["user", "admin"]}>
               <UserDashboard />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Additional user routes (so sidebar links work) */}
+        <Route
+          path="/user/books"
+          element={
+            <ProtectedRoute allowedRoles={["user", "admin"]}>
+              <BookList />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/user/borrow"
+          element={
+            <ProtectedRoute allowedRoles={["user", "admin"]}>
+              <BorrowForm />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/user/borrowed"
+          element={
+            <ProtectedRoute allowedRoles={["user", "admin"]}>
+              <Borrowed />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/user/returned"
+          element={
+            <ProtectedRoute allowedRoles={["user", "admin"]}>
+              <Returned />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/user/overdue"
+          element={
+            <ProtectedRoute allowedRoles={["user", "admin"]}>
+              <Overdue />
             </ProtectedRoute>
           }
         />

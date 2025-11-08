@@ -45,7 +45,11 @@ export default function Login() {
           <input id="password" type="password" name="password" placeholder="••••••••" value={form.password} onChange={handleChange} className="w-full border rounded-lg p-2" required />
         </div>
 
-  <button type="submit" disabled={loading} className="w-full bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 text-white rounded-lg p-2">{loading ? "Logging in..." : "Login"}</button>
+        <div className="flex items-center justify-between">
+          <Link to="/auth/forgot-password" className="text-sm text-indigo-600 hover:underline">Forgot password?</Link>
+        </div>
+
+        <button type="submit" disabled={loading} className="w-full bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 text-white rounded-lg p-2">{loading ? "Logging in..." : "Login"}</button>
 
         <p className="mt-4 text-sm text-gray-600">Don't have an account? <Link to="/auth/register" className="text-indigo-600">Register</Link></p>
       </form>
