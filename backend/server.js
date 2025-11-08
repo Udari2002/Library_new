@@ -5,6 +5,7 @@ import connectDB from "./config/db.js";
 
 import authRoutes from "./routes/authRoutes.js";
 import bookRoutes from "./routes/bookRoutes.js";
+import borrowRoutes from "./routes/borrowRoutes.js";
 
 dotenv.config();
 
@@ -20,6 +21,7 @@ const startServer = async () => {
   // ✅ Make sure these are here
   app.use("/api/auth", authRoutes);
   app.use("/api/books", bookRoutes);
+  app.use("/api/borrows", borrowRoutes);
 
   const PORT = process.env.PORT || 5000;
   app.listen(PORT, () =>
