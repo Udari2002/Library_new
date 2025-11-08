@@ -1,7 +1,10 @@
 import axios from "axios";
 
+// Prefer Vite env variable VITE_API_BASE, fallback to localhost:5001 (your backend .env uses PORT=5001)
+const base = (import.meta.env && import.meta.env.VITE_API_BASE) || "http://localhost:5001/api";
+
 const api = axios.create({
-  baseURL: "http://localhost:5000/api",
+  baseURL: base,
 });
 
 // Attach token automatically (if present)
