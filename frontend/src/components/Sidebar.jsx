@@ -42,9 +42,9 @@ export default function Sidebar() {
       <aside
         className={`fixed lg:static top-0 left-0 min-h-screen w-64 text-white p-4 transform ${
           open ? "translate-x-0" : "-translate-x-full"
-        } lg:translate-x-0 transition-transform duration-300 z-40 flex flex-col justify-between`}
+        } lg:translate-x-0 transition-transform duration-300 z-40 flex flex-col justify-between backdrop-blur-sm`}
         style={{
-          backgroundImage: `linear-gradient(to bottom, rgba(79,70,229,0.85), rgba(67,56,202,0.9)), url('/sidebar-bg.jpg')`,
+          backgroundImage: `linear-gradient(to bottom, rgba(79,70,229,0.65), rgba(67,56,202,0.7)), url('/bg.jpg')`,
           backgroundSize: "cover",
           backgroundPosition: "center",
         }}
@@ -74,12 +74,13 @@ export default function Sidebar() {
                   to={item.path}
                   onClick={() => setOpen(false)}
                   className={({ isActive }) =>
-                    `flex items-center h-12 px-3 rounded-lg transition-colors duration-150 gap-3 text-sm ${
-                      isActive ? "bg-indigo-600 shadow-inner" : "hover:bg-indigo-600/60"
-                    }`
+                    `flex items-center h-12 px-4 rounded-lg transition-all duration-200 gap-3 text-sm font-medium ${
+                      isActive
+                        ? "bg-white/12 shadow-inner ring-1 ring-white/10"
+                        : "hover:bg-white/6"
+                    } transform hover:-translate-y-0.5`
                   }
                 >
-                  <span className="w-6 text-center opacity-90">•</span>
                   <span className="flex-1">{item.name}</span>
                 </NavLink>
               </li>

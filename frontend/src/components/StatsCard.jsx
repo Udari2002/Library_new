@@ -1,8 +1,12 @@
 // src/components/StatsCard.jsx
 /* eslint-disable react/prop-types */
-export default function StatsCard({ title, value, variant = "bg-gradient-to-br from-indigo-600 to-indigo-500" }) {
+import { statsVariants } from "../theme";
+
+export default function StatsCard({ title, value, variant = "indigo" }) {
+  const variantClass = statsVariants[variant] || variant;
+  const textClass = variant === "slate" ? "text-gray-800" : "text-white";
   return (
-    <div className={`p-4 rounded-xl text-white shadow-md ${variant}`}>
+    <div className={`relative p-4 rounded-xl ${textClass} shadow-md overflow-hidden ${variantClass}`}>
       <h3 className="text-sm uppercase tracking-wide font-semibold opacity-90">
         {title}
       </h3>
