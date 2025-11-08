@@ -2,13 +2,56 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Gothic brand font for sidebar */
-.gothic-font {
-	font-family: 'UnifrakturCook', serif;
+/* Sidebar brand using Bookman Old Style (system font fallback) */
+.sidebar-brand {
+	/* removed Bookman-specific font per user request; use site default */
+	font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+	font-size: 28px; /* user requested 28 */
+	letter-spacing: 0.5px;
 }
 
-/* Sidebar brand larger size */
-.sidebar-brand {
-	font-size: 1.375rem; /* ~22px */
+/* Typing text container */
+.typing-text {
+	display: inline-block;
+	color: rgba(255,255,255,0.95);
+	font-size: 1rem;
+	font-weight: 700; /* bold */
+	text-transform: uppercase;
+}
+
+/* Cursor for typing effect */
+.typing-cursor {
+	display: inline-block;
+	width: 2px;
+	height: 1.05em;
+	background: rgba(255,255,255,0.9);
+	margin-left: 6px;
+	animation: blink 1s steps(2, start) infinite;
+	vertical-align: bottom;
+}
+
+@keyframes blink {
+	0%, 50% { opacity: 1 }
+	51%, 100% { opacity: 0 }
+}
+
+/* Decorative gradient blobs used on admin dashboard */
+.gradient-blob {
+	position: absolute;
+	border-radius: 9999px;
+	filter: blur(40px);
+	opacity: 0.22;
+	pointer-events: none;
+	transform: translate3d(0,0,0);
+}
+
+.gradient-blob--large {
+	width: 420px;
+	height: 420px;
+}
+
+.gradient-blob--medium {
+	width: 260px;
+	height: 260px;
 }
 

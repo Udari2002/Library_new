@@ -15,32 +15,42 @@ export default function Dashboard() {
       <div className="flex-1 flex flex-col">
         <Navbar />
 
-        <main className="p-6 space-y-6">
-          <h1 className="text-3xl font-bold text-indigo-700">Dashboard</h1>
-
-          {/* Statistic cards */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            <StatsCard title="Total Books" value="1,230" color="bg-indigo-600" />
-            <StatsCard title="Borrowed Books" value="342" color="bg-emerald-500" />
-            <StatsCard title="Returned Books" value="288" color="bg-blue-500" />
-            <StatsCard title="Overdue Books" value="14" color="bg-red-500" />
+        <main className="p-6 flex-1 overflow-auto">
+          <div className="flex items-center justify-between mb-4">
+            <div>
+              <h1 className="text-3xl font-bold text-indigo-700">Admin Dashboard</h1>
+              <p className="text-gray-600 mt-1">Overview of library activity and inventory.</p>
+            </div>
           </div>
 
-          {/* Recent Section */}
-          <section className="bg-white rounded-xl shadow-md border border-gray-100 p-6 hover:shadow-lg transition">
-            <h2 className="text-xl font-semibold mb-4 text-indigo-600">
-              Recent Borrow Records
-            </h2>
-            <p className="text-gray-600">
-              This section will later display recent borrow and return transactions.
-            </p>
+          <section className="relative grid grid-cols-1 lg:grid-cols-3 gap-6 mb-4">
+            {/* decorative gradient shapes */}
+            <div className="gradient-blob gradient-blob--large" style={{ left: -80, top: -40, background: 'linear-gradient(135deg,#eef2ff,#f8fafc)' }} />
+            <div className="gradient-blob gradient-blob--medium" style={{ right: -40, bottom: -20, background: 'linear-gradient(135deg,#f1f5f9,#ffffff)' }} />
+
+            <div className="lg:col-span-2 space-y-6 relative z-10">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <StatsCard title="Total Books" value="1,230" variant="bg-gradient-to-br from-indigo-600 to-indigo-500" />
+                <StatsCard title="Borrowed Books" value="342" variant="bg-gradient-to-br from-emerald-400 to-emerald-300" />
+                <StatsCard title="Overdue Books" value="14" variant="bg-gradient-to-br from-rose-500 to-rose-400" />
+              </div>
+
+              <div className="bg-white rounded-xl shadow p-6">
+                <h2 className="text-lg font-semibold mb-2 text-indigo-600">Recent Borrow Records</h2>
+                <p className="text-gray-600 text-sm">List of latest borrow and return transactions.</p>
+              </div>
+
+              <div className="bg-white rounded-xl shadow p-6">
+                <h2 className="text-lg font-semibold mb-2 text-indigo-600">Quick Insights</h2>
+                <p className="text-gray-600 text-sm">Summary cards, alerts, and quick actions will appear here.</p>
+              </div>
+            </div>
+
+            <aside className="space-y-6 relative z-10">
+              <LibraryPieChart />
+              <DataTable />
+            </aside>
           </section>
-
-          {/* Chart + Table */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <LibraryPieChart />
-            <DataTable />
-          </div>
         </main>
       </div>
     </div>

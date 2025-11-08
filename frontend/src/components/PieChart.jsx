@@ -24,7 +24,7 @@ export default function LibraryPieChart() {
         Book Status Summary
       </h2>
 
-      <ResponsiveContainer width="100%" height={300}>
+      <ResponsiveContainer width="100%" height={240}>
         <PieChart>
           <Pie
             data={data}
