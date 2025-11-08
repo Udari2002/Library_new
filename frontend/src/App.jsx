@@ -1,49 +1,52 @@
 // src/App.jsx
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
 import ProtectedRoute from "./routes/ProtectedRoute.jsx";
 
 // Auth
 import Login from "./pages/auth/Login.jsx";
+import Register from "./pages/auth/Register.jsx";
 
 // Admin Pages
 import AdminDashboard from "./pages/admin/Dashboard.jsx";
-import Books from "./pages/admin/Books.jsx";
-import Users from "./pages/admin/Users.jsx";
-import BorrowedBooks from "./pages/admin/BorrowedBooks.jsx";
-import ReturnedBooks from "./pages/admin/ReturnedBooks.jsx";
-import OverdueBooks from "./pages/admin/OverdueBooks.jsx";
 
 // User Pages
 import UserDashboard from "./pages/user/Dashboard.jsx";
 
-// Shared
-import NotFound from "./pages/shared/NotFound.jsx";
-import Profile from "./pages/shared/Profile.jsx";
+// Shared (placeholders)
+
+import { AuthProvider } from "./context/AuthContext.jsx";
 
 export default function App() {
   return (
-    <Routes>
-      {/* Public route */}
-      <Route path="/" element={<Login />} />
+    <AuthProvider>
+      <Routes>
+        {/* Auth */}
+        <Route path="/auth/login" element={<Login />} />
+        <Route path="/auth/register" element={<Register />} />
 
-      {/* Admin area */}
-      <Route element={<ProtectedRoute allowRoles={["admin"]} />}>
-        <Route path="/admin/dashboard" element={<AdminDashboard />} />
-        <Route path="/admin/books" element={<Books />} />
-        <Route path="/admin/users" element={<Users />} />
-        <Route path="/admin/borrowed" element={<BorrowedBooks />} />
-        <Route path="/admin/returned" element={<ReturnedBooks />} />
-        <Route path="/admin/overdue" element={<OverdueBooks />} />
-      </Route>
+        {/* Admin protected route */}
+        <Route
+          path="/admin/dashboard"
+          element={
+            <ProtectedRoute allowedRoles={["admin"]}>
+              <AdminDashboard />
+            </ProtectedRoute>
+          }
+        />
 
-      {/* User area */}
-      <Route element={<ProtectedRoute allowRoles={["user", "admin"]} />}>
-        <Route path="/user/dashboard" element={<UserDashboard />} />
-        <Route path="/profile" element={<Profile />} />
-      </Route>
+        {/* User protected route */}
+        <Route
+          path="/dashboard"
+          element={
+            <ProtectedRoute allowedRoles={["user", "admin"]}>
+              <UserDashboard />
+            </ProtectedRoute>
+          }
+        />
 
-      {/* Catch all */}
-      <Route path="*" element={<NotFound />} />
-    </Routes>
+        {/* Default */}
+        <Route path="/" element={<Navigate to="/auth/login" replace />} />
+      </Routes>
+    </AuthProvider>
   );
 }

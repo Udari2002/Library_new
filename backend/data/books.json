@@ -1,0 +1,37 @@
+[
+  {
+    "title": "Clean Code",
+    "author": "Robert C. Martin",
+    "category": "Software Engineering",
+    "isbn": "9780132350884",
+    "available": true
+  },
+  {
+    "title": "Introduction to Algorithms",
+    "author": "Thomas H. Cormen",
+    "category": "Computer Science",
+    "isbn": "9780262033848",
+    "available": true
+  },
+  {
+    "title": "The Pragmatic Programmer",
+    "author": "Andrew Hunt & David Thomas",
+    "category": "Software Development",
+    "isbn": "9780201616224",
+    "available": true
+  },
+  {
+    "title": "Artificial Intelligence: A Modern Approach",
+    "author": "Stuart Russell & Peter Norvig",
+    "category": "AI & Machine Learning",
+    "isbn": "9780134610993",
+    "available": true
+  },
+  {
+    "title": "Digital Design",
+    "author": "M. Morris Mano",
+    "category": "Electronics",
+    "isbn": "9780132774208",
+    "available": true
+  }
+]

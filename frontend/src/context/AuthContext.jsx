@@ -1,36 +1,42 @@
-// src/context/AuthContext.jsx
-import { createContext, useContext, useEffect, useState } from "react";
+import React, { createContext, useContext, useEffect, useMemo, useState } from "react";
 
-const AuthContext = createContext();
+export const AuthContext = createContext(null);
 
-// This provider wraps the entire app and stores the logged-in user info
 export function AuthProvider({ children }) {
-  const [user, setUser] = useState(null); // { id, email, role }
+  const [user, setUser] = useState(() => {
+    try {
+      return JSON.parse(localStorage.getItem("authUser")) || null;
+    } catch {
+      return null;
+    }
+  });
 
-  // Load user from localStorage on refresh
   useEffect(() => {
-    const raw = localStorage.getItem("lms_user");
-    if (raw) setUser(JSON.parse(raw));
-  }, []);
+    if (user) localStorage.setItem("authUser", JSON.stringify(user));
+    else localStorage.removeItem("authUser");
+  }, [user]);
 
-  // Fake sign-in function for now (will be replaced by backend later)
-  const signIn = async (payload) => {
-    setUser(payload);
-    localStorage.setItem("lms_user", JSON.stringify(payload));
+  const register = ({ name, email, password, role = "user" }) => {
+    const users = JSON.parse(localStorage.getItem("users") || "[]");
+    if (users.some((u) => u.email === email)) throw new Error("A user with that email already exists.");
+    const newUser = { id: Date.now(), name, email, password, role };
+    users.push(newUser);
+    localStorage.setItem("users", JSON.stringify(users));
+    setUser({ id: newUser.id, name: newUser.name, email: newUser.email, role: newUser.role });
   };
 
-  // Logout function
-  const signOut = () => {
-    setUser(null);
-    localStorage.removeItem("lms_user");
+  const login = (email, password) => {
+    const users = JSON.parse(localStorage.getItem("users") || "[]");
+    const found = users.find((u) => u.email === email && u.password === password);
+    if (!found) throw new Error("Invalid email or password.");
+    setUser({ id: found.id, name: found.name, email: found.email, role: found.role });
   };
 
-  return (
-    <AuthContext.Provider value={{ user, signIn, signOut }}>
-      {children}
-    </AuthContext.Provider>
-  );
+  const logout = () => setUser(null);
+
+  const value = useMemo(() => ({ user, register, login, logout }), [user]);
+
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
 
-// Custom hook to access the auth context anywhere
 export const useAuth = () => useContext(AuthContext);

@@ -1,4 +1,5 @@
 // src/components/StatsCard.jsx
+/* eslint-disable react/prop-types */
 export default function StatsCard({ title, value, color = "bg-indigo-600" }) {
   return (
     <div className={`p-4 rounded-xl text-white shadow-md ${color}`}>

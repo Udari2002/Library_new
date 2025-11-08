@@ -1,22 +1,16 @@
-// src/routes/ProtectedRoute.jsx
-import { Navigate, Outlet } from "react-router-dom";
-import { useAuth } from "../context/AuthContext.jsx";
+/* eslint-disable react/prop-types */
+import React, { useContext } from "react";
+import { Navigate } from "react-router-dom";
+import { AuthContext } from "../context/AuthContext.jsx";
 
-export default function ProtectedRoute({ allowRoles }) {
-  const { user } = useAuth();
+export default function ProtectedRoute({ children, allowedRoles }) {
+  const { user } = useContext(AuthContext);
 
-  // If not logged in → redirect to login page
-  if (!user) {
-    return <Navigate to="/" replace />;
+  if (!user) return <Navigate to="/auth/login" replace />;
+
+  if (allowedRoles && !allowedRoles.includes(user.role)) {
+    return <Navigate to="/auth/login" replace />;
   }
 
-  // If logged in but role not allowed → redirect to dashboard of their role
-  if (allowRoles && !allowRoles.includes(user.role)) {
-    const redirectPath =
-      user.role === "admin" ? "/admin/dashboard" : "/user/dashboard";
-    return <Navigate to={redirectPath} replace />;
-  }
-
-  // If allowed → render the nested route
-  return <Outlet />;
+  return children;
 }

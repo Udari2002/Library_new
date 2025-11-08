@@ -1,8 +1,26 @@
-// src/pages/admin/Books.jsx
+import { useEffect, useState } from "react";
 import Navbar from "../../components/Navbar";
 import Sidebar from "../../components/Sidebar";
+import ModalForm from "../../components/ModalForm";
+import api from "../../api/axios";
 
 export default function Books() {
+  const [books, setBooks] = useState([]);
+  const [showModal, setShowModal] = useState(false);
+
+  const fetchBooks = async () => {
+    try {
+      const res = await api.get("/books");
+      setBooks(res.data);
+    } catch (err) {
+      console.error("Error loading books:", err);
+    }
+  };
+
+  useEffect(() => {
+    fetchBooks();
+  }, []);
+
   return (
     <div className="flex bg-gray-50 min-h-screen text-gray-800">
       <Sidebar />
@@ -11,7 +29,10 @@ export default function Books() {
         <main className="p-6 space-y-6">
           <div className="flex justify-between items-center">
             <h1 className="text-3xl font-bold text-indigo-700">Books</h1>
-            <button className="bg-emerald-500 hover:bg-emerald-600 text-white px-4 py-2 rounded-lg shadow-sm">
+            <button
+              onClick={() => setShowModal(true)}
+              className="bg-emerald-500 hover:bg-emerald-600 text-white px-4 py-2 rounded-lg shadow-sm"
+            >
               + Add Book
             </button>
           </div>
@@ -27,23 +48,39 @@ export default function Books() {
                 </tr>
               </thead>
               <tbody>
-                <tr className="border-t hover:bg-gray-50">
-                  <td className="p-3">The Great Gatsby</td>
-                  <td className="p-3">F. Scott Fitzgerald</td>
-                  <td className="p-3">Novel</td>
-                  <td className="p-3 text-emerald-600 font-semibold">Available</td>
-                </tr>
-                <tr className="border-t hover:bg-gray-50">
-                  <td className="p-3">1984</td>
-                  <td className="p-3">George Orwell</td>
-                  <td className="p-3">Dystopian</td>
-                  <td className="p-3 text-red-500 font-semibold">Borrowed</td>
-                </tr>
+                {books.map((b) => (
+                  <tr key={b._id} className="border-t hover:bg-gray-50">
+                    <td className="p-3">{b.title}</td>
+                    <td className="p-3">{b.author}</td>
+                    <td className="p-3">{b.category}</td>
+                    <td
+                      className={`p-3 font-semibold ${
+                        b.available ? "text-emerald-600" : "text-red-500"
+                      }`}
+                    >
+                      {b.available ? "Available" : "Borrowed"}
+                    </td>
+                  </tr>
+                ))}
+                {books.length === 0 && (
+                  <tr>
+                    <td className="p-3 text-gray-500" colSpan="4">
+                      No books yet.
+                    </td>
+                  </tr>
+                )}
               </tbody>
             </table>
           </div>
         </main>
       </div>
+
+      {showModal && (
+        <ModalForm
+          onClose={() => setShowModal(false)}
+          onAdded={fetchBooks}
+        />
+      )}
     </div>
   );
 }
