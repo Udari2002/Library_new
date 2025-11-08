@@ -2,3 +2,13 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Gothic brand font for sidebar */
+.gothic-font {
+	font-family: 'UnifrakturCook', serif;
+}
+
+/* Sidebar brand larger size */
+.sidebar-brand {
+	font-size: 1.375rem; /* ~22px */
+}
+

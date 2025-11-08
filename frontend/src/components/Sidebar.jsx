@@ -40,9 +40,14 @@ export default function Sidebar() {
 
       {/* Sidebar */}
       <aside
-        className={`fixed lg:static top-0 left-0 h-full w-64 bg-gradient-to-b from-indigo-700 to-indigo-800 text-white p-4 transform ${
+        className={`fixed lg:static top-0 left-0 min-h-screen w-64 text-white p-4 transform ${
           open ? "translate-x-0" : "-translate-x-full"
-        } lg:translate-x-0 transition-transform duration-300 z-40 flex flex-col`}
+        } lg:translate-x-0 transition-transform duration-300 z-40 flex flex-col justify-between`}
+        style={{
+          backgroundImage: `linear-gradient(to bottom, rgba(79,70,229,0.85), rgba(67,56,202,0.9)), url('/sidebar-bg.jpg')`,
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+        }}
       >
         {/* Measurements (desktop)
             - width: w-64 (16rem = 256px)
@@ -53,9 +58,9 @@ export default function Sidebar() {
 
         {/* Logo / header area */}
         <div className="flex items-center gap-3 h-20 px-2">
-          <div className="w-10 h-10 rounded-md bg-white/20 flex items-center justify-center">📚</div>
+          <div className="w-12 h-12 rounded-md bg-white/20 flex items-center justify-center text-xl">📚</div>
           <div>
-            <h1 className="text-lg font-bold">Library</h1>
+            <h1 className="font-bold sidebar-brand gothic-font">ShelfLife</h1>
             <p className="text-xs opacity-80">Management</p>
           </div>
         </div>
@@ -84,7 +89,7 @@ export default function Sidebar() {
 
         {/* Footer */}
         <div className="mt-6 pt-4 border-t border-white/10 text-xs opacity-90 px-2">
-          <div>© {new Date().getFullYear()} Library</div>
+          <div className="text-sm font-semibold">© {new Date().getFullYear()} ShelfLife</div>
           <div className="text-xxs mt-1 opacity-70">v0.1.0</div>
         </div>
       </aside>
