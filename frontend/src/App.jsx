@@ -24,6 +24,7 @@ import Returned from "./pages/user/Returned.jsx";
 import Overdue from "./pages/user/Overdue.jsx";
 
 // Shared (placeholders)
+import Profile from "./pages/shared/Profile.jsx";
 
 import { AuthProvider } from "./context/AuthContext.jsx";
 import Footer from "./components/Footer";
@@ -95,6 +96,15 @@ export default function App() {
           element={
             <ProtectedRoute allowedRoles={["user", "admin"]}>
               <UserDashboard />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/profile"
+          element={
+            <ProtectedRoute allowedRoles={["user", "admin"]}>
+              <Profile />
             </ProtectedRoute>
           }
         />

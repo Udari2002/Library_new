@@ -10,6 +10,7 @@ export default function Sidebar() {
   const { user } = useAuth();
 
   const adminMenu = [
+    { name: "Profile", path: "/profile" },
     { name: "Dashboard", path: "/admin/dashboard" },
     { name: "Books", path: "/admin/books" },
     { name: "Users", path: "/admin/users" },
@@ -19,6 +20,7 @@ export default function Sidebar() {
   ];
 
   const userMenu = [
+    { name: "Profile", path: "/profile" },
     { name: "Dashboard", path: "/dashboard" },
     { name: "Books", path: "/user/books" },
     { name: "Borrow", path: "/user/borrow" },
