@@ -1,8 +1,28 @@
 // src/pages/admin/Users.jsx
 import Navbar from "../../components/Navbar";
 import Sidebar from "../../components/Sidebar";
+import { useAuth } from "../../context/AuthContext";
+import { useEffect, useState } from "react";
 
 export default function Users() {
+  const { api, user } = useAuth();
+  const [users, setUsers] = useState([]);
+
+  useEffect(() => {
+    let mounted = true;
+    const fetch = async () => {
+      try {
+        const res = await api.get('/auth/list');
+        if (!mounted) return;
+        setUsers(res.data || []);
+      } catch (err) {
+        console.error('Failed to load users', err);
+      }
+    };
+    if (user?.role === 'admin') fetch();
+    return () => (mounted = false);
+  }, [api, user]);
+
   return (
     <div className="flex bg-gray-50 min-h-screen text-gray-800">
       <Sidebar />
@@ -18,19 +38,18 @@ export default function Users() {
                   <th className="p-3">Name</th>
                   <th className="p-3">Email</th>
                   <th className="p-3">Role</th>
+                  <th className="p-3">Last Login</th>
                 </tr>
               </thead>
               <tbody>
-                <tr className="border-t hover:bg-gray-50">
-                  <td className="p-3">Thamindu Bandara</td>
-                  <td className="p-3">thamindu@library.com</td>
-                  <td className="p-3">User</td>
-                </tr>
-                <tr className="border-t hover:bg-gray-50">
-                  <td className="p-3">Udari Moksha</td>
-                  <td className="p-3">udari@library.com</td>
-                  <td className="p-3">Admin</td>
-                </tr>
+                {users.map((u) => (
+                  <tr key={u._id} className="border-t hover:bg-gray-50">
+                    <td className="p-3">{u.name}</td>
+                    <td className="p-3">{u.email}</td>
+                    <td className="p-3">{u.role}</td>
+                    <td className="p-3">{u.lastLogin ? new Date(u.lastLogin).toLocaleString() : '-'}</td>
+                  </tr>
+                ))}
               </tbody>
             </table>
           </div>

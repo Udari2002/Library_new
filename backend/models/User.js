@@ -7,6 +7,7 @@ const userSchema = new mongoose.Schema({
   role: { type: String, enum: ["admin", "user"], default: "user", index: true },
   phone: { type: String },
   avatarBase64: { type: String },
+  lastLogin: { type: Date },
   branch: { type: mongoose.Schema.Types.ObjectId, ref: "Branch" },
   isActive: { type: Boolean, default: true },
 }, { timestamps: true });

@@ -46,9 +46,17 @@ export const login = async (req, res) => {
       { expiresIn: "7d" }
     );
 
+    // update lastLogin timestamp
+    try {
+      user.lastLogin = new Date();
+      await user.save();
+    } catch (e) {
+      console.warn('Failed to update lastLogin', e.message || e);
+    }
+
     res.json({
       token,
-      user: { _id: user._id, name: user.name, email: user.email, role: user.role }
+      user: { _id: user._id, name: user.name, email: user.email, role: user.role, lastLogin: user.lastLogin }
     });
   } catch (err) {
     console.error("Login error:", err);
