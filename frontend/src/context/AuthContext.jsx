@@ -1,11 +1,7 @@
 import React, { createContext, useContext, useEffect, useMemo, useState } from "react";
-import axios from "axios";
+import api from "../api/axios";
 
 export const AuthContext = createContext(null);
-
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
-
-const api = axios.create({ baseURL: API_URL });
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(() => {
@@ -37,9 +33,9 @@ export function AuthProvider({ children }) {
   // Register: call backend, then auto-login to obtain token
   const register = async ({ name, email, password, role = "user" }) => {
     try {
-      await api.post("/api/auth/register", { name, email, password, role });
-      // auto-login after successful register to get token
-      const res = await api.post("/api/auth/login", { email, password });
+      await api.post("/auth/register", { name, email, password, role });
+        // auto-login after successful register to get token
+        const res = await api.post("/auth/login", { email, password });
       const { token: t, user: u } = res.data;
       setToken(t);
       setUser(u);
@@ -53,7 +49,7 @@ export function AuthProvider({ children }) {
 
   const login = async (email, password) => {
     try {
-      const res = await api.post("/api/auth/login", { email, password });
+    const res = await api.post("/auth/login", { email, password });
       const { token: t, user: u } = res.data;
       setToken(t);
       setUser(u);
@@ -69,7 +65,7 @@ export function AuthProvider({ children }) {
     setUser(null);
   };
 
-  const value = useMemo(() => ({ user, token, register, login, logout, api }), [user, token]);
+  const value = useMemo(() => ({ user, token, register, login, logout, api, setUser }), [user, token]);
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }

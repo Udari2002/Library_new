@@ -1,17 +1,25 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
 import { useAuth } from "../../context/AuthContext";
 
 export default function Borrowed() {
-  const { user } = useAuth();
+  const { user, api } = useAuth();
   const [borrowedBooks, setBorrowedBooks] = useState([]);
 
   useEffect(() => {
-    axios
-      .get(`http://localhost:5000/api/borrowed/${user._id}`)
-      .then((res) => setBorrowedBooks(res.data))
-      .catch((err) => console.error(err));
-  }, [user]);
+    let mounted = true;
+    const fetch = async () => {
+      if (!user) return setBorrowedBooks([]);
+      try {
+        const res = await api.get('/borrows/me');
+        if (!mounted) return;
+        setBorrowedBooks(res.data || []);
+      } catch (err) {
+        console.error('Failed to load borrows', err);
+      }
+    };
+    fetch();
+    return () => (mounted = false);
+  }, [user, api]);
 
   return (
     <div className="p-6">
@@ -26,13 +34,16 @@ export default function Borrowed() {
             </tr>
           </thead>
           <tbody>
-            {borrowedBooks.map((book) => (
-              <tr key={book._id} className="border-b hover:bg-gray-50">
-                <td className="p-3">{book.title}</td>
-                <td className="p-3">{new Date(book.borrowDate).toLocaleDateString()}</td>
-                <td className="p-3">{new Date(book.dueDate).toLocaleDateString()}</td>
-              </tr>
-            ))}
+            {borrowedBooks.map((rec) => {
+              const title = rec.book?.title || rec.snapshot?.title || 'Unknown';
+              return (
+                <tr key={rec._id} className="border-b hover:bg-gray-50">
+                  <td className="p-3">{title}</td>
+                  <td className="p-3">{rec.borrowDate ? new Date(rec.borrowDate).toLocaleDateString() : '-'}</td>
+                  <td className="p-3">{rec.dueDate ? new Date(rec.dueDate).toLocaleDateString() : '-'}</td>
+                </tr>
+              );
+            })}
           </tbody>
         </table>
       </div>

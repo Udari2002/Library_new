@@ -75,3 +75,26 @@ export const forgotPassword = async (req, res) => {
     return res.status(500).json({ message: "Server error" });
   }
 };
+
+export const updateProfile = async (req, res) => {
+  try {
+    const userId = req.user?.id;
+    if (!userId) return res.status(401).json({ message: 'Unauthorized' });
+
+    const { name, email, phone, avatarBase64 } = req.body;
+
+    const updates = {};
+    if (name) updates.name = name;
+    if (email) updates.email = email;
+    if (phone) updates.phone = phone;
+    if (avatarBase64) updates.avatarBase64 = avatarBase64;
+
+    const user = await User.findByIdAndUpdate(userId, updates, { new: true }).select('-passwordHash');
+    if (!user) return res.status(404).json({ message: 'User not found' });
+
+    return res.json({ user });
+  } catch (err) {
+    console.error('updateProfile error:', err);
+    return res.status(500).json({ message: 'Server error' });
+  }
+};
