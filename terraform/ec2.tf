@@ -73,8 +73,10 @@ resource "aws_instance" "library_server" {
   vpc_security_group_ids = [aws_security_group.library_sg.id]
   subnet_id             = aws_subnet.library_subnet.id
 
+  # Force recreation by adding timestamp to user_data
   user_data = <<-EOF
     #!/bin/bash
+    # Force recreation: ${timestamp()}
     yum update -y
     
     # Install Docker
@@ -92,12 +94,6 @@ resource "aws_instance" "library_server" {
     mkdir -p /opt/library_app
     chown ec2-user:ec2-user /opt/library_app
   EOF
-
-  # Force recreation by adding timestamp to user_data
-  user_data = <<-EOF
-    #!/bin/bash
-    # Force recreation: ${timestamp()}
-    yum update -y
     
     # Install Docker
     amazon-linux-extras install docker -y
