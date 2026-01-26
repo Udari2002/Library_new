@@ -96,5 +96,6 @@ resource "aws_instance" "library_server" {
   tags = {
     Name    = "${var.project_name}-server"
     Project = var.project_name
+    RecreateForNewKey = "true"  # Force recreation with new SSH key
   }
 }
