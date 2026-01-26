@@ -45,14 +45,15 @@ pipeline {
             sh 'cd terraform && terraform init'
             sh 'cd terraform && terraform plan -var-file="terraform.tfvars"'
             sh 'cd terraform && terraform apply -var-file="terraform.tfvars" -auto-approve'
-          
-          // Get the EC2 public IP from Terraform output
-          def ec2_ip = sh(script: 'cd terraform && terraform output -raw instance_public_ip', returnStdout: true).trim()
-          
-          // Update Ansible inventory with the actual EC2 IP
-          sh "sed -i 's/REPLACE_WITH_EC2_IP/${ec2_ip}/g' ansible/inventory.ini"
-          
-          echo "✅ Infrastructure provisioned. EC2 IP: ${ec2_ip}"
+            
+            // Get the EC2 public IP from Terraform output
+            def ec2_ip = sh(script: 'cd terraform && terraform output -raw instance_public_ip', returnStdout: true).trim()
+            
+            // Update Ansible inventory with the actual EC2 IP
+            sh "sed -i 's/REPLACE_WITH_EC2_IP/${ec2_ip}/g' ansible/inventory.ini"
+            
+            echo "✅ Infrastructure provisioned. EC2 IP: ${ec2_ip}"
+          }
         }
       }
     }
