@@ -65,12 +65,13 @@ pipeline {
         }
         withCredentials([
           usernamePassword(credentialsId: 'dockerhub-cred', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS'),
-          usernamePassword(credentialsId: 'aws-credentials', usernameVariable: 'AWS_ACCESS_KEY_ID', passwordVariable: 'AWS_SECRET_ACCESS_KEY')
+          usernamePassword(credentialsId: 'aws-credentials', usernameVariable: 'AWS_ACCESS_KEY_ID', passwordVariable: 'AWS_SECRET_ACCESS_KEY'),
+          sshUserPrivateKey(credentialsId: 'ssh-key', keyFileVariable: 'SSH_KEY', usernameVariable: 'SSH_USER')
         ]) {
           // Wait for EC2 instance to be fully ready
           sh 'sleep 60'
-          // Execute the Ansible playbook for AWS deployment
-          sh 'ansible-playbook -i ansible/inventory.ini ansible/deploy.yml --ssh-common-args="-o StrictHostKeyChecking=no"'
+          // Execute the Ansible playbook with SSH key from Jenkins credential
+          sh 'ansible-playbook -i ansible/inventory.ini ansible/deploy.yml --private-key=$SSH_KEY --ssh-common-args="-o StrictHostKeyChecking=no"'
         }
       }
     }
