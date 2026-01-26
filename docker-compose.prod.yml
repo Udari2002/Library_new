@@ -1,0 +1,35 @@
+version: '3.8'
+
+services:
+  mongo:
+    image: mongo:6
+    restart: unless-stopped
+    volumes:
+      - mongo-data:/data/db
+    ports:
+      - "27017:27017"
+
+  backend:
+    image: ${DOCKER_USER}/library-backend:latest
+    environment:
+      - MONGO_URI=mongodb://mongo:27017/library_new
+      - PORT=5001
+      - NODE_ENV=production
+    ports:
+      - "5001:5001"
+    depends_on:
+      - mongo
+    restart: unless-stopped
+
+  frontend:
+    image: ${DOCKER_USER}/library-frontend:latest
+    environment:
+      - VITE_API_BASE=http://localhost:5001/api
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
+    restart: unless-stopped
+
+volumes:
+  mongo-data:

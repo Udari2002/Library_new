@@ -13,6 +13,12 @@ backend/node_modules/
 backend/.env
 backend/data/
 
+# Terraform files to ignore (IMPORTANT - contains sensitive data)
+terraform/.terraform/
+terraform/*.tfstate
+terraform/*.tfstate.backup
+terraform/terraform.tfvars
+
 # Logs
 logs
 *.log
@@ -35,3 +41,4 @@ lerna-debug.log*
 
 # OS
 Thumbs.db
+jenkins_home_backup.tar.gz
