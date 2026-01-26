@@ -40,10 +40,11 @@ pipeline {
 
     stage('Provision Infrastructure (Terraform)') {
       steps {
-        script {
-          sh 'cd terraform && terraform init'
-          sh 'cd terraform && terraform plan -var-file="terraform.tfvars"'
-          sh 'cd terraform && terraform apply -var-file="terraform.tfvars" -auto-approve'
+        withCredentials([usernamePassword(credentialsId: 'aws-credentials', usernameVariable: 'AWS_ACCESS_KEY_ID', passwordVariable: 'AWS_SECRET_ACCESS_KEY')]) {
+          script {
+            sh 'cd terraform && terraform init'
+            sh 'cd terraform && terraform plan -var-file="terraform.tfvars"'
+            sh 'cd terraform && terraform apply -var-file="terraform.tfvars" -auto-approve'
           
           // Get the EC2 public IP from Terraform output
           def ec2_ip = sh(script: 'cd terraform && terraform output -raw instance_public_ip', returnStdout: true).trim()
@@ -61,7 +62,10 @@ pipeline {
         script {
            sh 'ansible --version || echo "Ansible not found. Please install Ansible."'
         }
-        withCredentials([usernamePassword(credentialsId: 'dockerhub-cred', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
+        withCredentials([
+          usernamePassword(credentialsId: 'dockerhub-cred', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS'),
+          usernamePassword(credentialsId: 'aws-credentials', usernameVariable: 'AWS_ACCESS_KEY_ID', passwordVariable: 'AWS_SECRET_ACCESS_KEY')
+        ]) {
           // Wait for EC2 instance to be fully ready
           sh 'sleep 60'
           // Execute the Ansible playbook for AWS deployment
