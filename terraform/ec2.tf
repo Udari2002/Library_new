@@ -100,3 +100,16 @@ resource "aws_instance" "library_server" {
     Project = var.project_name
   }
 }
+
+# Elastic IP for static IP address
+resource "aws_eip" "library_eip" {
+  instance = aws_instance.library_server.id
+  domain   = "vpc"
+  
+  tags = {
+    Name    = "${var.project_name}-eip"
+    Project = var.project_name
+  }
+  
+  depends_on = [aws_internet_gateway.library_igw]
+}
