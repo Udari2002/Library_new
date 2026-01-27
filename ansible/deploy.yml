@@ -31,14 +31,14 @@
       become_user: ec2-user
 
     - name: Pull latest images
-      command: docker compose pull
+      command: docker-compose pull
       args:
         chdir: "{{ project_dir }}"
       environment:
         DOCKER_USER: "{{ docker_registry_user }}"
 
     - name: Restart containers (Deploy)
-      command: docker compose up -d
+      command: docker-compose up -d
       args:
         chdir: "{{ project_dir }}"
       environment:
