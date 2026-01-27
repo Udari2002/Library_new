@@ -1,7 +1,11 @@
 import axios from "axios";
 
-// Prefer Vite env variable VITE_API_BASE, fallback to localhost:5001 (your backend .env uses PORT=5001)
-const base = (import.meta.env && import.meta.env.VITE_API_BASE) || "http://localhost:5001/api";
+// Get the API base URL from environment variables
+const base = import.meta.env.VITE_API_BASE || "http://localhost:5001/api";
+
+console.log('🔧 Frontend API Configuration:');
+console.log('🔍 VITE_API_BASE:', import.meta.env.VITE_API_BASE);
+console.log('🔍 Using API base URL:', base);
 
 const api = axios.create({
   baseURL: base,

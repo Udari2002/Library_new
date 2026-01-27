@@ -22,8 +22,23 @@ pipeline {
     stage('Build Docker Images') {
       steps {
         withCredentials([usernamePassword(credentialsId: 'dockerhub-cred', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
-          sh 'docker build -t ${DOCKER_USER}/library-backend:latest ./backend'
-          sh 'docker build -t ${DOCKER_USER}/library-frontend:latest ./frontend'
+          script {
+            // Get EC2 IP for API URL (if infrastructure already exists)
+            def ec2_ip = ""
+            try {
+              ec2_ip = sh(script: 'cd terraform && terraform output -raw instance_public_ip 2>/dev/null || echo "44.198.192.218"', returnStdout: true).trim()
+            } catch (Exception e) {
+              ec2_ip = "44.198.192.218" // fallback to current IP
+            }
+            
+            echo "🔧 Building with API URL: http://${ec2_ip}:5001/api"
+            
+            // Build backend
+            sh 'docker build -t ${DOCKER_USER}/library-backend:latest ./backend'
+            
+            // Build frontend with correct API URL
+            sh "docker build --build-arg VITE_API_BASE=http://${ec2_ip}:5001/api -t \${DOCKER_USER}/library-frontend:latest ./frontend"
+          }
         }
       }
     }
