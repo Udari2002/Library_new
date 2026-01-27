@@ -95,20 +95,8 @@ resource "aws_instance" "library_server" {
     chown ec2-user:ec2-user /opt/library_app
   EOF
 
-  # Force immediate replacement instead of in-place update
-  replace_triggered_by = [
-    null_resource.force_replacement
-  ]
-
   tags = {
     Name    = "${var.project_name}-server"
     Project = var.project_name
-  }
-}
-
-# Trigger for forcing replacement
-resource "null_resource" "force_replacement" {
-  triggers = {
-    always_replace = timestamp()
   }
 }
