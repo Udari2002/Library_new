@@ -32,10 +32,36 @@ const startServer = async () => {
   app.use("/api/books", bookRoutes);
   app.use("/api/borrows", borrowRoutes);
 
-  const PORT = process.env.PORT || 5001;
-  app.listen(PORT, () =>
-    console.log(`🚀 Server running on http://localhost:${PORT}`)
-  );
+  // Smart port handling - try multiple ports if needed
+  const startPort = process.env.PORT || 5001;
+  const tryPorts = [startPort, 5001, 5002, 5003, 3001];
+  
+  let server;
+  for (const port of tryPorts) {
+    try {
+      server = await new Promise((resolve, reject) => {
+        const srv = app.listen(port, () => {
+          console.log(`🚀 Server successfully running on http://localhost:${port}`);
+          console.log(`📡 API endpoints available at http://localhost:${port}/api`);
+          resolve(srv);
+        }).on('error', (err) => {
+          if (err.code === 'EADDRINUSE') {
+            console.log(`⚠️  Port ${port} is busy, trying next port...`);
+            reject(err);
+          } else {
+            console.error(`❌ Server error on port ${port}:`, err.message);
+            reject(err);
+          }
+        });
+      });
+      break; // Successfully started
+    } catch (err) {
+      if (err.code !== 'EADDRINUSE' || port === tryPorts[tryPorts.length - 1]) {
+        console.error(`❌ Failed to start server after trying all ports:`, err.message);
+        process.exit(1);
+      }
+    }
+  }
 };
 
 startServer();
