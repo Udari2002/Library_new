@@ -1,0 +1,177 @@
+@startuml Technology Stack Overview
+
+!theme plain
+title Library Management System - Technology Stack & Components
+
+' Define colors
+!define LIGHTBLUE #E8F4FD
+!define LIGHTGREEN #E8F6E8
+!define LIGHTYELLOW #FFF9E6
+!define LIGHTPINK #FFE6E6
+!define LIGHTGRAY #F5F5F5
+!define LIGHTORANGE #FFE6CC
+
+package "Frontend Technologies" as frontend LIGHTBLUE {
+  component "React 18" as react {
+    [JSX Components]
+    [React Hooks]
+    [Context API]
+    [React Router]
+  }
+  
+  component "Build Tools" as build_tools {
+    [Vite]
+    [ESLint]
+    [PostCSS]
+    [Tailwind CSS]
+  }
+  
+  component "UI Framework" as ui {
+    [Tailwind CSS]
+    [Responsive Design]
+    [Component Library]
+  }
+}
+
+package "Backend Technologies" as backend LIGHTGREEN {
+  component "Node.js Runtime" as nodejs {
+    [Express.js Server]
+    [Middleware Stack]
+    [Route Handlers]
+  }
+  
+  component "Authentication" as auth_tech {
+    [JWT Tokens]
+    [Password Hashing]
+    [Session Management]
+  }
+  
+  component "API Layer" as api_layer {
+    [RESTful API]
+    [CORS Support]
+    [Error Handling]
+  }
+}
+
+package "Database & Storage" as database LIGHTPINK {
+  component "MongoDB" as mongo {
+    [Document Database]
+    [Collections]
+    [Indexes]
+    [Aggregation]
+  }
+  
+  component "Data Models" as models {
+    [User Model]
+    [Book Model]
+    [BorrowRecord Model]
+    [Notification Model]
+    [ActivityLog Model]
+  }
+}
+
+package "DevOps & Infrastructure" as devops LIGHTYELLOW {
+  component "Containerization" as containers {
+    [Docker]
+    [Multi-stage Builds]
+    [Docker Compose]
+    [Container Registry]
+  }
+  
+  component "CI/CD Pipeline" as pipeline {
+    [Jenkins]
+    [GitHub Webhooks]
+    [Automated Testing]
+    [Deployment Scripts]
+  }
+  
+  component "Infrastructure as Code" as iac_tech {
+    [Terraform]
+    [AWS Resources]
+    [State Management]
+  }
+  
+  component "Configuration Management" as config_mgmt {
+    [Ansible]
+    [Playbooks]
+    [Inventory Files]
+  }
+}
+
+package "Cloud Infrastructure" as cloud LIGHTORANGE {
+  component "AWS Services" as aws_services {
+    [EC2 Instances]
+    [VPC Networking]
+    [Security Groups]
+    [Elastic IP]
+  }
+  
+  component "Networking" as networking {
+    [Load Balancing]
+    [Reverse Proxy]
+    [SSL/TLS]
+    [DNS]
+  }
+}
+
+package "Development Tools" as dev_tools LIGHTGRAY {
+  component "Version Control" as vcs {
+    [Git]
+    [GitHub]
+    [Branching Strategy]
+  }
+  
+  component "Code Quality" as quality {
+    [ESLint]
+    [Code Formatting]
+    [Testing Framework]
+  }
+}
+
+' Relationships
+react --> nodejs : API Calls
+nodejs --> mongo : Database Queries
+containers --> pipeline : Build Process
+pipeline --> iac_tech : Infrastructure
+iac_tech --> aws_services : Cloud Resources
+config_mgmt --> containers : Deployment
+vcs --> pipeline : Code Integration
+
+' Technology Details
+note right of react
+  **Frontend Stack:**
+  - React with Hooks
+  - Vite for build tooling
+  - Tailwind for styling
+  - Axios for API calls
+  - React Router for navigation
+end note
+
+note right of nodejs
+  **Backend Stack:**
+  - Express.js framework
+  - JWT authentication
+  - Mongoose ODM
+  - CORS middleware
+  - Environment variables
+end note
+
+note right of containers
+  **Containerization:**
+  - Multi-stage Dockerfiles
+  - Production optimized
+  - Environment-specific configs
+  - Volume persistence
+  - Service networking
+end note
+
+note right of pipeline
+  **CI/CD Process:**
+  - Automated builds
+  - Docker image creation
+  - Infrastructure provisioning
+  - Automated deployment
+  - Health checks
+end note
+
+@enduml

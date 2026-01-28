@@ -1,0 +1,101 @@
+@startuml Library Management System Architecture
+
+!theme plain
+title Library Management System - System Architecture
+
+' Define colors
+!define LIGHTBLUE #E8F4FD
+!define LIGHTGREEN #E8F6E8
+!define LIGHTYELLOW #FFF9E6
+!define LIGHTPINK #FFE6E6
+!define LIGHTGRAY #F5F5F5
+
+package "Client Side" as client LIGHTBLUE {
+  [Web Browser] as browser
+  [React Frontend] as frontend
+  browser --> frontend : User Interface
+}
+
+package "Load Balancer" as lb LIGHTYELLOW {
+  [NGINX] as nginx
+  nginx : - Reverse Proxy
+  nginx : - Static File Serving
+  nginx : - React Router Support
+}
+
+package "Application Server" as app LIGHTGREEN {
+  [Node.js Backend] as backend
+  [Express.js API] as api
+  [Authentication Middleware] as auth
+  [CORS Middleware] as cors
+  
+  backend --> api : REST API
+  api --> auth : JWT Authentication
+  api --> cors : Cross-Origin Support
+}
+
+package "Database Layer" as db LIGHTPINK {
+  [MongoDB] as mongodb
+  [Collections] as collections
+  
+  mongodb --> collections : Data Storage
+  collections : - Users
+  collections : - Books
+  collections : - BorrowRecords
+  collections : - ActivityLogs
+  collections : - Notifications
+}
+
+package "API Routes" as routes LIGHTGRAY {
+  [Auth Routes] as authRoutes
+  [Book Routes] as bookRoutes
+  [Borrow Routes] as borrowRoutes
+  
+  authRoutes : POST /api/auth/login
+  authRoutes : POST /api/auth/register
+  authRoutes : POST /api/auth/forgot-password
+  authRoutes : POST /api/auth/reset-password
+  
+  bookRoutes : GET /api/books
+  bookRoutes : POST /api/books
+  bookRoutes : PUT /api/books/:id
+  bookRoutes : DELETE /api/books/:id
+  
+  borrowRoutes : GET /api/borrows
+  borrowRoutes : POST /api/borrows
+  borrowRoutes : PUT /api/borrows/:id
+}
+
+' Connections
+frontend --> nginx : HTTP Requests\n(Port 3000)
+nginx --> api : Proxy to Backend\n(Port 5001)
+api --> routes : Route Handling
+routes --> mongodb : Database Queries\n(Port 27017)
+
+' User Roles
+actor "Admin User" as admin
+actor "Regular User" as user
+
+admin --> browser : Manage System
+user --> browser : Borrow Books
+
+note right of frontend
+  **Frontend Features:**
+  - User Authentication
+  - Book Catalog
+  - Borrowing System
+  - Admin Dashboard
+  - User Profiles
+  - Responsive Design
+end note
+
+note right of mongodb
+  **Database Features:**
+  - User Management
+  - Book Inventory
+  - Borrowing Records
+  - Activity Logging
+  - Data Persistence
+end note
+
+@enduml

@@ -26,9 +26,9 @@ pipeline {
             // Get EC2 IP for API URL (if infrastructure already exists)
             def ec2_ip = ""
             try {
-              ec2_ip = sh(script: 'cd terraform && terraform output -raw instance_public_ip 2>/dev/null || echo "44.198.192.218"', returnStdout: true).trim()
+              ec2_ip = sh(script: 'cd terraform && terraform output -raw elastic_ip 2>/dev/null || echo "98.84.69.78"', returnStdout: true).trim()
             } catch (Exception e) {
-              ec2_ip = "44.198.192.218" // fallback to current IP
+              ec2_ip = "98.84.69.78" // fallback to current Elastic IP
             }
             
             echo "🔧 Building with API URL: http://${ec2_ip}:5001/api"
