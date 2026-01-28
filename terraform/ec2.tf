@@ -72,6 +72,10 @@ resource "aws_instance" "library_server" {
   key_name              = var.key_name
   vpc_security_group_ids = [aws_security_group.library_sg.id]
   subnet_id             = aws_subnet.library_subnet.id
+  monitoring            = true  # Enable detailed monitoring
+  
+  # Prevent accidental termination
+  disable_api_termination = true
 
   # Force recreation by adding timestamp to user_data
   user_data = <<-EOF

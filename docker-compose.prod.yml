@@ -3,33 +3,49 @@ version: '3.8'
 services:
   mongo:
     image: mongo:6
-    restart: unless-stopped
+    restart: always  # Always restart if container stops
     volumes:
       - mongo-data:/data/db
     ports:
       - "27017:27017"
+    healthcheck:
+      test: echo 'db.runCommand("ping").ok' | mongo mongo:27017/library_new --quiet
+      interval: 30s
+      timeout: 10s
+      retries: 3
 
   backend:
     image: ${DOCKER_USER}/library-backend:latest
+    restart: always  # Always restart if container stops
     environment:
       - MONGO_URI=mongodb://mongo:27017/library_new
       - PORT=5001
       - NODE_ENV=production
+      - JWT_SECRET=your_super_secret_jwt_key_here_change_this_in_production
     ports:
       - "5001:5001"
     depends_on:
       - mongo
-    restart: unless-stopped
+    healthcheck:
+      test: curl -f http://localhost:5001/ || exit 1
+      interval: 30s
+      timeout: 10s
+      retries: 3
 
   frontend:
     image: ${DOCKER_USER}/library-frontend:latest
+    restart: always  # Always restart if container stops
     environment:
       - VITE_API_BASE=http://98.84.69.78:5001/api
     ports:
       - "3000:80"
     depends_on:
       - backend
-    restart: unless-stopped
+    healthcheck:
+      test: curl -f http://localhost:80/ || exit 1
+      interval: 30s
+      timeout: 10s
+      retries: 3
 
 volumes:
   mongo-data:
