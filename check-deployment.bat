@@ -13,4 +13,5 @@ echo.
 echo 📊 DEPLOYMENT STATUS:
 powershell -c "$f = try { (Invoke-WebRequest -Uri 'http://98.84.69.78:3000' -TimeoutSec 2 -UseBasicParsing).StatusCode -eq 200 } catch { $false }; $b = try { (Invoke-WebRequest -Uri 'http://98.84.69.78:5001' -TimeoutSec 2 -UseBasicParsing).StatusCode -eq 200 } catch { $false }; if($f -and $b) { Write-Host '🎉 APP FULLY DEPLOYED AND WORKING!' -ForegroundColor Green } elseif($f -or $b) { Write-Host '⚠️  PARTIALLY DEPLOYED' -ForegroundColor Yellow } else { Write-Host '❌ APP NOT DEPLOYED' -ForegroundColor Red }"
 
+
 pause
