@@ -2,44 +2,59 @@
   become: yes
   vars:
     project_dir: /opt/library_app
-    docker_registry_user: "{{ lookup('env', 'DOCKER_USER') }}"
-    docker_registry_pass: "{{ lookup('env', 'DOCKER_PASS') }}"
+    # These variables will be passed from Jenkins
+    docker_registry_user: "{{ DOCKER_USER }}"
+    docker_registry_pass: "{{ DOCKER_PASS }}"
 
   tasks:
     - name: Wait for instance to be ready
       wait_for_connection:
-        delay: 30
+        delay: 5
         timeout: 300
+
+    - name: Install Docker (Amazon Linux 2023)
+      dnf:
+        name: docker
+        state: present
+
+    - name: Start Docker service
+      systemd:
+        name: docker
+        state: started
+        enabled: yes
+
+    - name: Add ec2-user to docker group
+      user:
+        name: ec2-user
+        groups: docker
+        append: yes
+
+    - name: Install Docker Compose
+      get_url:
+        url: "https://github.com/docker/compose/releases/download/v2.24.1/docker-compose-linux-x86_64"
+        dest: /usr/local/bin/docker-compose
+        mode: '0755'
 
     - name: Ensure project directory exists
       file:
         path: "{{ project_dir }}"
         state: directory
-        mode: '0755'
         owner: ec2-user
         group: ec2-user
 
-    - name: Copy production docker-compose file to server
+    - name: Copy production docker-compose file
       copy:
         src: ../docker-compose.prod.yml
         dest: "{{ project_dir }}/docker-compose.yml"
-        owner: ec2-user
-        group: ec2-user
 
     - name: Login to Docker Hub
       shell: "echo {{ docker_registry_pass }} | docker login -u {{ docker_registry_user }} --password-stdin"
       become_user: ec2-user
 
-    - name: Pull latest images
-      command: docker-compose pull
+    - name: Pull and Deploy
+      shell: "/usr/local/bin/docker-compose up -d"
       args:
         chdir: "{{ project_dir }}"
       environment:
         DOCKER_USER: "{{ docker_registry_user }}"
-
-    - name: Restart containers (Deploy)
-      command: docker-compose up -d
-      args:
-        chdir: "{{ project_dir }}"
-      environment:
-        DOCKER_USER: "{{ docker_registry_user }}"
+      become_user: ec2-user

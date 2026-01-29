@@ -85,8 +85,11 @@ pipeline {
         ]) {
           // Wait for EC2 instance to be fully ready
           sh 'sleep 60'
-          // Execute the Ansible playbook with SSH key from Jenkins credential
-          sh 'ansible-playbook -i ansible/inventory.ini ansible/deploy.yml --private-key=$SSH_KEY --ssh-common-args="-o StrictHostKeyChecking=no"'
+          // Pass the Docker credentials as extra-vars to the playbook
+          sh "ansible-playbook -i ansible/inventory.ini ansible/deploy.yml \
+              --private-key=\$SSH_KEY \
+              --extra-vars 'DOCKER_USER=${DOCKER_USER} DOCKER_PASS=${DOCKER_PASS}' \
+              --ssh-common-args='-o StrictHostKeyChecking=no'"
         }
       }
     }
