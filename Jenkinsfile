@@ -26,9 +26,9 @@ pipeline {
             // Get EC2 IP for API URL (if infrastructure already exists)
             def ec2_ip = ""
             try {
-              ec2_ip = sh(script: 'cd terraform && terraform output -raw elastic_ip 2>/dev/null || echo "98.84.69.78"', returnStdout: true).trim()
+              ec2_ip = sh(script: 'cd terraform && terraform output -raw elastic_ip 2>/dev/null || echo "13.50.108.64"', returnStdout: true).trim()
             } catch (Exception e) {
-              ec2_ip = "98.84.69.78" // fallback to current Elastic IP
+              ec2_ip = "13.50.108.64" // fallback to Jenkins server IP
             }
             
             echo "🔧 Building with API URL: http://${ec2_ip}:5001/api"
@@ -74,25 +74,20 @@ pipeline {
     }
 
     stage('Deploy to AWS (Ansible)') {
-      steps {
-        script {
-           sh 'ansible --version || echo "Ansible not found. Please install Ansible."'
-        }
-        withCredentials([
-          usernamePassword(credentialsId: 'dockerhub-cred', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS'),
-          usernamePassword(credentialsId: 'aws-credentials', usernameVariable: 'AWS_ACCESS_KEY_ID', passwordVariable: 'AWS_SECRET_ACCESS_KEY'),
-          sshUserPrivateKey(credentialsId: 'ssh-key', keyFileVariable: 'SSH_KEY', usernameVariable: 'SSH_USER')
-        ]) {
-          // Wait for EC2 instance to be fully ready
-          sh 'sleep 60'
-          // Pass the Docker credentials as extra-vars to the playbook
-          sh "ansible-playbook -i ansible/inventory.ini ansible/deploy.yml \
-              --private-key=\$SSH_KEY \
-              --extra-vars 'DOCKER_USER=${DOCKER_USER} DOCKER_PASS=${DOCKER_PASS}' \
-              --ssh-common-args='-o StrictHostKeyChecking=no'"
-        }
-      }
+  steps {
+    withCredentials([
+      usernamePassword(credentialsId: 'dockerhub-cred', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS'),
+      sshUserPrivateKey(credentialsId: 'ssh-key', keyFileVariable: 'SSH_KEY', usernameVariable: 'SSH_USER')
+    ]) {
+      sh 'sleep 60'
+      // Pass the variables explicitly to the playbook
+      sh "ansible-playbook -i ansible/inventory.ini ansible/deploy.yml \
+          --private-key=\$SSH_KEY \
+          --extra-vars 'DOCKER_USER=${DOCKER_USER} DOCKER_PASS=${DOCKER_PASS}' \
+          --ssh-common-args='-o StrictHostKeyChecking=no'"
     }
+  }
+}
   }
 
   post {
