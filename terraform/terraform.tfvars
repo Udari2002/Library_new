@@ -1,4 +1,4 @@
-aws_region = "us-east-1"
+aws_region = "eu-north-1"
 instance_type = "t3.micro"
-key_name = "library-app-key"  # Back to original working key
+key_name = "Library_Management_system"  # Match your .pem file
 project_name = "library-app"
