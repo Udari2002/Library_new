@@ -1,10 +1,9 @@
 import axios from "axios";
 
-// Get the API base URL from environment variables
-const base = import.meta.env.VITE_API_BASE || "http://localhost:5001/api";
+// API base URL - points to your backend server
+const base = "http://34.229.72.128:5001/api";
 
 console.log('🔧 Frontend API Configuration:');
-console.log('🔍 VITE_API_BASE:', import.meta.env.VITE_API_BASE);
 console.log('🔍 Using API base URL:', base);
 
 const api = axios.create({
