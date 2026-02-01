@@ -35,6 +35,8 @@ services:
   frontend:
     image: ${DOCKER_USER}/library-frontend:latest
     restart: always  # Always restart if container stops
+    environment:
+      - VITE_API_BASE=http://34.229.72.128:5001/api
     ports:
       - "3000:80"
     depends_on:
