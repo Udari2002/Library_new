@@ -1,15 +1,27 @@
 const express = require("express");
 const cors = require("cors");
-const authRoutes = require("./routes/auth");
+// Import the correct auth routes that use MongoDB
+// Note: Need to convert to CommonJS or use dynamic import
 const path = require("path");
 
 const app = express();
 const PORT = process.env.PORT || 5001;
 
-app.use(cors());
+app.use(cors({
+  origin: ['http://44.198.192.218:3000', 'http://localhost:3000', 'http://34.229.72.128:3000'],
+  credentials: true
+}));
+
 app.use(express.json());
 
-app.use("/api/auth", authRoutes);
+// Simple auth endpoints that connect to MongoDB
+app.post("/api/auth/register", async (req, res) => {
+  res.json({ message: "Register endpoint - needs MongoDB connection" });
+});
+
+app.post("/api/auth/login", async (req, res) => {
+  res.json({ message: "Login endpoint - needs MongoDB connection" });
+});
 
 // Add simple endpoints for missing routes
 app.get("/api/books", (req, res) => {

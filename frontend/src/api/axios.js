@@ -1,7 +1,7 @@
 import axios from "axios";
 
-// API base URL - points to your backend server
-const base = "http://34.229.72.128:5001/api";
+// API base URL - direct routes without /api prefix
+const base = "http://34.229.72.128:5001";
 
 console.log('🔧 Frontend API Configuration:');
 console.log('🔍 Using API base URL:', base);
