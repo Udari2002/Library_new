@@ -19,7 +19,7 @@ const startServer = async () => {
   
   // Configure CORS to allow frontend access
   app.use(cors({
-    origin: ['http://44.198.192.218:3000', 'http://localhost:3000', 'http://34.229.72.128:3000'],
+    origin: true, // Allow all origins for now (can be restricted later)
     credentials: true
   }));
   

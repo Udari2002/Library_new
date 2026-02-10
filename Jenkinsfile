@@ -80,6 +80,13 @@ pipeline {
       sshUserPrivateKey(credentialsId: 'ssh-key', keyFileVariable: 'SSH_KEY', usernameVariable: 'SSH_USER')
     ]) {
       sh 'sleep 60'
+      
+      // Replace placeholder IP with actual EC2 IP in docker-compose.prod.yml
+      sh "sed -i 's/REPLACE_WITH_EC2_IP/${ec2_ip}/g' docker-compose.prod.yml"
+      
+      // Ensure inventory is also updated (should already be done in previous stage)
+      sh "sed -i 's/REPLACE_WITH_EC2_IP/${ec2_ip}/g' ansible/inventory.ini"
+      
       // Pass the variables explicitly to the playbook
       sh "ansible-playbook -i ansible/inventory.ini ansible/deploy.yml \
           --private-key=\$SSH_KEY \
