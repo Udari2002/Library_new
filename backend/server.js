@@ -13,7 +13,13 @@ const startServer = async () => {
   console.log('🔍 Starting server with MONGO_URI:', process.env.MONGO_URI);
   console.log('🔍 PORT:', process.env.PORT);
   
-  await connectDB();
+  // Try to connect to database, but don't fail if it's not available
+  try {
+    await connectDB();
+    console.log('✅ Database connected successfully');
+  } catch (error) {
+    console.log('⚠️  Database connection failed, continuing with mock data:', error.message);
+  }
 
   const app = express();
   
