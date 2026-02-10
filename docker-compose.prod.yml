@@ -1,31 +1,16 @@
 version: '3.8'
 
 services:
-  mongo:
-    image: mongo:6
-    restart: always  # Always restart if container stops
-    volumes:
-      - mongo-data:/data/db
-    ports:
-      - "27017:27017"
-    healthcheck:
-      test: echo 'db.runCommand("ping").ok' | mongo mongo:27017/library_new --quiet
-      interval: 30s
-      timeout: 10s
-      retries: 3
-
   backend:
     image: ${DOCKER_USER}/library-backend:latest
     restart: always  # Always restart if container stops
     environment:
-      - MONGO_URI=mongodb://mongo:27017/library_new
+      - MONGO_URI=mongodb+srv://moksha_04:MOKsha0401@cluster0.fdr5dae.mongodb.net/library_new?appName=Cluster0
       - PORT=5001
       - NODE_ENV=production
       - JWT_SECRET=your_super_secret_jwt_key_here_change_this_in_production
     ports:
       - "5001:5001"
-    depends_on:
-      - mongo
     healthcheck:
       test: curl -f http://localhost:5001/ || exit 1
       interval: 30s
@@ -36,7 +21,7 @@ services:
     image: ${DOCKER_USER}/library-frontend:latest
     restart: always  # Always restart if container stops
     environment:
-      - VITE_API_BASE=http://34.229.72.128:5001/api
+      - VITE_API_BASE=http://13.61.138.122:5001/api
     ports:
       - "3000:80"
     depends_on:
@@ -46,6 +31,3 @@ services:
       interval: 30s
       timeout: 10s
       retries: 3
-
-volumes:
-  mongo-data:

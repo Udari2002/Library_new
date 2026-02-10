@@ -6,7 +6,7 @@ services:
       context: ./backend
       dockerfile: Dockerfile
     environment:
-      - MONGO_URI=mongodb://172.24.132.184:27017/library_new
+      - MONGO_URI=mongodb+srv://moksha_04:MOKsha0401@cluster0.fdr5dae.mongodb.net/library_new?appName=Cluster0
       - PORT=5001
       - NODE_ENV=development
     ports:
