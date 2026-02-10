@@ -81,11 +81,18 @@ pipeline {
     ]) {
       sh 'sleep 60'
       
-      // Replace placeholder IP with actual EC2 IP in docker-compose.prod.yml
-      sh "sed -i 's/REPLACE_WITH_EC2_IP/${ec2_ip}/g' docker-compose.prod.yml"
-      
-      // Ensure inventory is also updated (should already be done in previous stage)
-      sh "sed -i 's/REPLACE_WITH_EC2_IP/${ec2_ip}/g' ansible/inventory.ini"
+      script {
+        // Get EC2 IP from Terraform output again (for variable scope)
+        def ec2_ip = sh(script: 'cd terraform && terraform output -raw instance_public_ip', returnStdout: true).trim()
+        
+        // Replace placeholder IP with actual EC2 IP in docker-compose.prod.yml
+        sh "sed -i 's/REPLACE_WITH_EC2_IP/${ec2_ip}/g' docker-compose.prod.yml"
+        
+        // Ensure inventory is also updated (should already be done in previous stage)
+        sh "sed -i 's/REPLACE_WITH_EC2_IP/${ec2_ip}/g' ansible/inventory.ini"
+        
+        echo "🚀 Deploying to EC2 IP: ${ec2_ip}"
+      }
       
       // Pass the variables explicitly to the playbook
       sh "ansible-playbook -i ansible/inventory.ini ansible/deploy.yml \
