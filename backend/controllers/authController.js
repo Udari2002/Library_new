@@ -10,20 +10,17 @@ export const register = async (req, res) => {
       return res.status(400).json({ message: "Missing fields" });
     }
 
-    const exists = await User.findOne({ email });
-    if (exists) return res.status(409).json({ message: "Email already in use" });
+    // BYPASS DATABASE - Accept any registration
+    console.log("🔓 Registration bypassed - accepting any user");
+    
+    const mockUser = {
+      _id: "mock_user_id_" + Date.now(),
+      name: name,
+      email: email,
+      role: role
+    };
 
-    const salt = await bcrypt.genSalt(10);
-    const passwordHash = await bcrypt.hash(password, salt);
-
-    const user = await User.create({ name, email, passwordHash, role });
-
-    res.status(201).json({
-      _id: user._id,
-      name: user.name,
-      email: user.email,
-      role: user.role
-    });
+    res.status(201).json(mockUser);
   } catch (err) {
     console.error("Register error:", err);
     res.status(500).json({ message: "Server error" });
@@ -34,29 +31,30 @@ export const login = async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    const user = await User.findOne({ email });
-    if (!user) return res.status(401).json({ message: "Invalid credentials" });
+    if (!email || !password) {
+      return res.status(400).json({ message: "Email and password required" });
+    }
 
-    const ok = await bcrypt.compare(password, user.passwordHash);
-    if (!ok) return res.status(401).json({ message: "Invalid credentials" });
+    // BYPASS DATABASE - Accept any login
+    console.log("🔓 Login bypassed - accepting any credentials");
+    
+    const mockUser = {
+      _id: "mock_user_id_" + Date.now(),
+      name: email.split('@')[0], // Use email prefix as name
+      email: email,
+      role: "user",
+      lastLogin: new Date()
+    };
 
     const token = jwt.sign(
-      { sub: user._id, role: user.role, email: user.email },
-      process.env.JWT_SECRET,
+      { sub: mockUser._id, role: mockUser.role, email: mockUser.email },
+      process.env.JWT_SECRET || "fallback_jwt_secret_for_demo",
       { expiresIn: "7d" }
     );
 
-    // update lastLogin timestamp
-    try {
-      user.lastLogin = new Date();
-      await user.save();
-    } catch (e) {
-      console.warn('Failed to update lastLogin', e.message || e);
-    }
-
     res.json({
       token,
-      user: { _id: user._id, name: user.name, email: user.email, role: user.role, lastLogin: user.lastLogin }
+      user: mockUser
     });
   } catch (err) {
     console.error("Login error:", err);

@@ -2,38 +2,59 @@ import Book from "../models/Book.js";
 import BorrowRecord from "../models/BorrowRecord.js";
 import User from "../models/User.js";
 
+// Sample mock borrow records
+const mockBorrowRecords = [
+  {
+    _id: "borrow1",
+    user: "mock_user_id_1",
+    book: "book1",
+    borrowDate: new Date("2024-02-01"),
+    dueDate: new Date("2024-02-15"),
+    returnDate: null,
+    status: "borrowed",
+    fine: 0,
+    snapshot: { title: "The Great Gatsby", isbn: "978-0-7432-7356-5" }
+  },
+  {
+    _id: "borrow2", 
+    user: "mock_user_id_1",
+    book: "book2",
+    borrowDate: new Date("2024-01-20"),
+    dueDate: new Date("2024-02-03"),
+    returnDate: new Date("2024-02-05"),
+    status: "returned",
+    fine: 2.0,
+    snapshot: { title: "To Kill a Mockingbird", isbn: "978-0-06-112008-4" }
+  }
+];
+
 // Borrow a book
 export const borrowBook = async (req, res) => {
   try {
-    const userId = req.user?.id || req.body.userId; // prefer authenticated user
+    const userId = req.user?.id || req.body.userId || "mock_user_" + Date.now();
     const { bookId } = req.body;
+    
     if (!userId || !bookId) return res.status(400).json({ message: "Missing userId or bookId" });
 
-    // decrement available copies atomically
-    const book = await Book.findOneAndUpdate(
-      { _id: bookId, copiesAvailable: { $gt: 0 } },
-      { $inc: { copiesAvailable: -1 } },
-      { new: true }
-    );
-
-    if (!book) return res.status(400).json({ message: "No available copies" });
-
-    const loanDays = parseInt(process.env.DEFAULT_LOAN_DAYS || "14", 10);
+    console.log("📖 Mock book borrowing");
+    
+    const loanDays = 14;
     const now = new Date();
     const dueDate = new Date(now.getTime() + loanDays * 24 * 60 * 60 * 1000);
 
-    const snapshot = { title: book.title, isbn: book.isbn };
-
-    const borrow = await BorrowRecord.create({
+    const newBorrow = {
+      _id: "borrow_" + Date.now(),
       user: userId,
       book: bookId,
       borrowDate: now,
       dueDate,
       status: "borrowed",
-      snapshot
-    });
+      fine: 0,
+      snapshot: { title: "Mock Book Title", isbn: "978-0-000-00000-0" }
+    };
 
-    return res.status(201).json(borrow);
+    mockBorrowRecords.push(newBorrow);
+    return res.status(201).json(newBorrow);
   } catch (err) {
     console.error("borrowBook error:", err);
     return res.status(500).json({ message: "Server error" });
@@ -43,33 +64,28 @@ export const borrowBook = async (req, res) => {
 // Return a borrowed record
 export const returnBook = async (req, res) => {
   try {
-    const userId = req.user?.id;
     const { id } = req.params; // borrow record id
 
-    const record = await BorrowRecord.findById(id).populate('book');
-    if (!record) return res.status(404).json({ message: "Borrow record not found" });
+    console.log("📖 Mock book return");
+    
+    const recordIndex = mockBorrowRecords.findIndex(record => record._id === id);
+    if (recordIndex === -1) return res.status(404).json({ message: "Borrow record not found" });
 
-    // only borrower or admin can return
-    if (req.user.role !== 'admin' && record.user.toString() !== userId) return res.status(403).json({ message: "Forbidden" });
-
+    const record = mockBorrowRecords[recordIndex];
     if (record.status === 'returned') return res.status(400).json({ message: "Already returned" });
 
     const now = new Date();
     record.returnDate = now;
-    // compute fine
+    record.status = 'returned';
+    
+    // Calculate fine if overdue
     let fine = 0;
     if (record.dueDate && now > record.dueDate) {
       const ms = now - record.dueDate;
       const days = Math.ceil(ms / (24 * 60 * 60 * 1000));
-      const perDay = parseFloat(process.env.FINE_PER_DAY || "0");
-      fine = days * perDay;
+      fine = days * 0.50; // $0.50 per day
     }
     record.fine = fine;
-    record.status = 'returned';
-    await record.save();
-
-    // increment book available
-    await Book.findByIdAndUpdate(record.book._id, { $inc: { copiesAvailable: 1 } });
 
     return res.json(record);
   } catch (err) {
@@ -83,12 +99,16 @@ export const getUserBorrows = async (req, res) => {
     const userId = req.user?.id;
     if (!userId) return res.status(401).json({ message: "Unauthorized" });
 
+    console.log("📖 Mock user borrows retrieval");
+    
     const { status } = req.query;
-    const q = { user: userId };
-    if (status) q.status = status;
+    let filteredRecords = mockBorrowRecords.filter(record => record.user === userId);
+    
+    if (status) {
+      filteredRecords = filteredRecords.filter(record => record.status === status);
+    }
 
-    const list = await BorrowRecord.find(q).sort({ borrowDate: -1 }).populate('book');
-    return res.json(list);
+    return res.json(filteredRecords);
   } catch (err) {
     console.error("getUserBorrows error:", err);
     return res.status(500).json({ message: "Server error" });
@@ -97,9 +117,14 @@ export const getUserBorrows = async (req, res) => {
 
 export const getOverdue = async (req, res) => {
   try {
+    console.log("📖 Mock overdue books retrieval");
+    
     const now = new Date();
-    const list = await BorrowRecord.find({ status: 'borrowed', dueDate: { $lt: now } }).populate('book user');
-    return res.json(list);
+    const overdueRecords = mockBorrowRecords.filter(record => 
+      record.status === 'borrowed' && record.dueDate < now
+    );
+    
+    return res.json(overdueRecords);
   } catch (err) {
     console.error("getOverdue error:", err);
     return res.status(500).json({ message: "Server error" });
