@@ -13,9 +13,10 @@
 
     # --- PROVISIONING: INSTALL DOCKER ---
     - name: Install Docker
-      dnf:
+      yum:
         name: docker
         state: present
+        update_cache: yes
 
     - name: Start Docker service
       systemd:
