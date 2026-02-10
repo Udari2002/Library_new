@@ -9,7 +9,7 @@ const mockBorrowRecords = [
     user: "mock_user_id_1",
     book: "book1",
     borrowDate: new Date("2024-02-01"),
-    dueDate: new Date("2024-02-15"),
+    dueDate: new Date("2024-02-15"), 
     returnDate: null,
     status: "borrowed",
     fine: 0,
@@ -22,9 +22,119 @@ const mockBorrowRecords = [
     borrowDate: new Date("2024-01-20"),
     dueDate: new Date("2024-02-03"),
     returnDate: new Date("2024-02-05"),
-    status: "returned",
+    status: "returned", 
     fine: 2.0,
     snapshot: { title: "To Kill a Mockingbird", isbn: "978-0-06-112008-4" }
+  },
+  {
+    _id: "borrow3",
+    user: "mock_user_id_2",
+    book: "book4",
+    borrowDate: new Date("2024-01-25"),
+    dueDate: new Date("2024-02-08"),
+    returnDate: null,
+    status: "borrowed",
+    fine: 0,
+    snapshot: { title: "Pride and Prejudice", isbn: "978-0-14-143951-8" }
+  },
+  {
+    _id: "borrow4",
+    user: "mock_user_id_2", 
+    book: "book6",
+    borrowDate: new Date("2024-01-30"),
+    dueDate: new Date("2024-02-13"),
+    returnDate: null,
+    status: "borrowed",
+    fine: 0,
+    snapshot: { title: "Lord of the Flies", isbn: "978-0-571-05686-2" }
+  },
+  {
+    _id: "borrow5",
+    user: "mock_user_id_3",
+    book: "book6",
+    borrowDate: new Date("2024-02-02"),
+    dueDate: new Date("2024-02-16"),
+    returnDate: null,
+    status: "borrowed",
+    fine: 0,
+    snapshot: { title: "Lord of the Flies", isbn: "978-0-571-05686-2" }
+  },
+  {
+    _id: "borrow6",
+    user: "mock_user_id_3",
+    book: "book6",
+    borrowDate: new Date("2024-02-05"),
+    dueDate: new Date("2024-02-19"),
+    returnDate: null,
+    status: "borrowed",
+    fine: 0,
+    snapshot: { title: "Lord of the Flies", isbn: "978-0-571-05686-2" }
+  },
+  {
+    _id: "borrow7",
+    user: "mock_user_id_1",
+    book: "book7",
+    borrowDate: new Date("2024-01-15"),
+    dueDate: new Date("2024-01-29"),
+    returnDate: new Date("2024-02-02"),
+    status: "returned",
+    fine: 4.0,
+    snapshot: { title: "The Hobbit", isbn: "978-0-547-92822-7" }
+  },
+  {
+    _id: "borrow8",
+    user: "mock_user_id_2",
+    book: "book9",
+    borrowDate: new Date("2024-01-28"),
+    dueDate: new Date("2024-02-05"),
+    returnDate: null,
+    status: "borrowed",
+    fine: 0,
+    snapshot: { title: "The Da Vinci Code", isbn: "978-0-385-50420-1" }
+  },
+  {
+    _id: "borrow9", 
+    user: "mock_user_id_4",
+    book: "book9",
+    borrowDate: new Date("2024-01-20"),
+    dueDate: new Date("2024-02-03"),
+    returnDate: null,
+    status: "borrowed",
+    fine: 0,
+    snapshot: { title: "The Da Vinci Code", isbn: "978-0-385-50420-1" }
+  },
+  {
+    _id: "borrow10",
+    user: "mock_user_id_4",
+    book: "book9",
+    borrowDate: new Date("2024-02-08"),
+    dueDate: new Date("2024-02-22"),
+    returnDate: null,
+    status: "borrowed",
+    fine: 0,
+    snapshot: { title: "The Da Vinci Code", isbn: "978-0-385-50420-1" }
+  },
+  {
+    _id: "borrow11",
+    user: "mock_user_id_1",
+    book: "book3", 
+    borrowDate: new Date("2024-01-10"),
+    dueDate: new Date("2024-01-24"),
+    returnDate: new Date("2024-01-26"),
+    status: "returned",
+    fine: 2.0,
+    snapshot: { title: "1984", isbn: "978-0-452-28423-4" }
+  },
+  {
+    _id: "borrow12",
+    user: "mock_user_id_5",
+    book: "book7", 
+    borrowDate: new Date("2024-02-03"),
+    dueDate: new Date("2024-02-17"),
+    returnDate: null,
+    status: "borrowed",
+    fine: 0,
+    snapshot: { title: "The Hobbit", isbn: "978-0-547-92822-7" }
   }
 ];
 

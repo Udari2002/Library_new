@@ -37,6 +37,90 @@ const mockBooks = [
     availableCopies: 4,
     createdAt: new Date("2024-01-03"),
     updatedAt: new Date("2024-01-03")
+  },
+  {
+    _id: "book4",
+    title: "Pride and Prejudice",
+    author: "Jane Austen",
+    isbn: "978-0-14-143951-8",
+    genre: "Romance",
+    publishedYear: 1813,
+    totalCopies: 3,
+    availableCopies: 1,
+    createdAt: new Date("2024-01-04"),
+    updatedAt: new Date("2024-01-04")
+  },
+  {
+    _id: "book5",
+    title: "The Catcher in the Rye",
+    author: "J.D. Salinger",
+    isbn: "978-0-316-76948-0",
+    genre: "Fiction",
+    publishedYear: 1951,
+    totalCopies: 4,
+    availableCopies: 4,
+    createdAt: new Date("2024-01-05"),
+    updatedAt: new Date("2024-01-05")
+  },
+  {
+    _id: "book6",
+    title: "Lord of the Flies",
+    author: "William Golding",
+    isbn: "978-0-571-05686-2",
+    genre: "Fiction",
+    publishedYear: 1954,
+    totalCopies: 3,
+    availableCopies: 0,
+    createdAt: new Date("2024-01-06"),
+    updatedAt: new Date("2024-01-06")
+  },
+  {
+    _id: "book7",
+    title: "The Hobbit",
+    author: "J.R.R. Tolkien",
+    isbn: "978-0-547-92822-7",
+    genre: "Fantasy",
+    publishedYear: 1937,
+    totalCopies: 5,
+    availableCopies: 2,
+    createdAt: new Date("2024-01-07"),
+    updatedAt: new Date("2024-01-07")
+  },
+  {
+    _id: "book8",
+    title: "Harry Potter and the Philosopher's Stone", 
+    author: "J.K. Rowling",
+    isbn: "978-0-7475-3269-9",
+    genre: "Fantasy",
+    publishedYear: 1997,
+    totalCopies: 8,
+    availableCopies: 5,
+    createdAt: new Date("2024-01-08"),
+    updatedAt: new Date("2024-01-08")
+  },
+  {
+    _id: "book9",
+    title: "The Da Vinci Code",
+    author: "Dan Brown",
+    isbn: "978-0-385-50420-1",
+    genre: "Mystery",
+    publishedYear: 2003,
+    totalCopies: 4,
+    availableCopies: 1,
+    createdAt: new Date("2024-01-09"),
+    updatedAt: new Date("2024-01-09")
+  },
+  {
+    _id: "book10",
+    title: "Brave New World",
+    author: "Aldous Huxley",
+    isbn: "978-0-06-085052-4",
+    genre: "Science Fiction",
+    publishedYear: 1932,
+    totalCopies: 3,
+    availableCopies: 2,
+    createdAt: new Date("2024-01-10"),
+    updatedAt: new Date("2024-01-10")
   }
 ];
 
