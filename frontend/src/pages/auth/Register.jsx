@@ -55,7 +55,7 @@ export default function Register() {
           </select>
         </div>
 
-        <button type="submit" disabled={loading} className="w-full bg-red-600 hover:bg-red-700 disabled:opacity-50 text-white py-2 rounded">{loading ? "Creating..." : "Register"}</button>
+        <button type="submit" disabled={loading} className="w-full bg-emerald-600 hover:bg-emerald-700 disabled:opacity-50 text-white py-2 rounded">{loading ? "Creating..." : "Register"}</button>
 
         <p className="mt-4 text-sm text-gray-600">Already have an account? <Link to="/auth/login" className="text-indigo-600">Login</Link></p>
       </form>
