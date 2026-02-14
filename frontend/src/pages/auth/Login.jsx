@@ -46,7 +46,7 @@ export default function Login() {
           <Link to="/auth/forgot-password" className="text-sm text-indigo-600 hover:underline">Forgot password?</Link>
         </div>
 
-        <button type="submit" disabled={loading} className="w-full bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 text-white rounded-lg p-2">{loading ? "Logging in..." : "Login"}</button>
+        <button type="submit" disabled={loading} className="w-full bg-emerald-600 hover:bg-emerald-700 disabled:opacity-50 text-white rounded-lg p-2">{loading ? "Logging in..." : "Login"}</button>
 
         <p className="mt-4 text-sm text-gray-600">Don't have an account? <Link to="/auth/register" className="text-indigo-600">Register</Link></p>
       </form>
