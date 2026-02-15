@@ -28,7 +28,7 @@ export default function Login() {
   };
 
   return (
-    <AuthLayout title="Welcome Back" subtitle="Sign in to your account">
+    <AuthLayout title="ello World" subtitle="Sign in to your account">
       {error && <div className="bg-red-50 border border-red-200 text-red-700 p-2 rounded mb-4">{error}</div>}
 
       <form onSubmit={handleSubmit} className="space-y-4">

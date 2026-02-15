@@ -125,40 +125,92 @@ const mockBooks = [
 ];
 
 export const listBooks = async (_req, res) => {
-  console.log("📚 Returning mock books data");
-  res.json(mockBooks);
+  try {
+    console.log("📚 Fetching books from MongoDB");
+    const books = await Book.find().sort({ createdAt: -1 });
+    console.log(`✅ Found ${books.length} books in database`);
+    res.json(books);
+  } catch (error) {
+    console.error("❌ Error fetching books:", error);
+    res.status(500).json({ message: "Failed to fetch books", error: error.message });
+  }
 };
 
 export const createBook = async (req, res) => {
-  console.log("📚 Mock book creation");
-  const newBook = {
-    _id: "book_" + Date.now(),
-    ...req.body,
-    createdAt: new Date(),
-    updatedAt: new Date()
-  };
-  mockBooks.push(newBook);
-  res.status(201).json(newBook);
+  try {
+    console.log("📚 Creating new book in MongoDB");
+    console.log("Request body:", req.body);
+    
+    const { title, author, category, isbn, totalCopies, description, coverImage } = req.body;
+    
+    // Create new book with proper defaults
+    const bookData = {
+      title,
+      author,
+      category: category || "General",
+      isbn,
+      totalCopies: totalCopies || 1,
+      copiesAvailable: totalCopies || 1, // Initially all copies are available
+      description: description || "",
+      coverImage: coverImage || "",
+      addedBy: req.user?.id // If you have user authentication
+    };
+
+    const newBook = new Book(bookData);
+    const savedBook = await newBook.save();
+    
+    console.log("✅ Book created successfully:", savedBook._id);
+    res.status(201).json(savedBook);
+  } catch (error) {
+    console.error("❌ Error creating book:", error);
+    if (error.code === 11000) {
+      return res.status(400).json({ message: "A book with this ISBN already exists" });
+    }
+    res.status(500).json({ message: "Failed to create book", error: error.message });
+  }
 };
 
 export const updateBook = async (req, res) => {
-  console.log("📚 Mock book update");
-  const { id } = req.params;
-  const bookIndex = mockBooks.findIndex(book => book._id === id);
-  if (bookIndex !== -1) {
-    mockBooks[bookIndex] = { ...mockBooks[bookIndex], ...req.body, updatedAt: new Date() };
-    res.json(mockBooks[bookIndex]);
-  } else {
-    res.status(404).json({ message: "Book not found" });
+  try {
+    console.log("📚 Updating book in MongoDB");
+    const { id } = req.params;
+    
+    const updatedBook = await Book.findByIdAndUpdate(
+      id,
+      { ...req.body },
+      { new: true, runValidators: true }
+    );
+    
+    if (!updatedBook) {
+      return res.status(404).json({ message: "Book not found" });
+    }
+    
+    console.log("✅ Book updated successfully:", updatedBook._id);
+    res.json(updatedBook);
+  } catch (error) {
+    console.error("❌ Error updating book:", error);
+    if (error.code === 11000) {
+      return res.status(400).json({ message: "A book with this ISBN already exists" });
+    }
+    res.status(500).json({ message: "Failed to update book", error: error.message });
   }
 };
 
 export const deleteBook = async (req, res) => {
-  console.log("📚 Mock book deletion");
-  const { id } = req.params;
-  const bookIndex = mockBooks.findIndex(book => book._id === id);
-  if (bookIndex !== -1) {
-    mockBooks.splice(bookIndex, 1);
+  try {
+    console.log("📚 Deleting book from MongoDB");
+    const { id } = req.params;
+    
+    const deletedBook = await Book.findByIdAndDelete(id);
+    
+    if (!deletedBook) {
+      return res.status(404).json({ message: "Book not found" });
+    }
+    
+    console.log("✅ Book deleted successfully:", deletedBook._id);
+    res.json({ message: "Book deleted successfully", book: deletedBook });
+  } catch (error) {
+    console.error("❌ Error deleting book:", error);
+    res.status(500).json({ message: "Failed to delete book", error: error.message });
   }
-  res.json({ message: "Deleted" });
 };

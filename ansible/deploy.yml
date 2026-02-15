@@ -53,6 +53,14 @@
       shell: "echo {{ docker_pass }} | docker login -u {{ docker_user }} --password-stdin"
       become_user: ec2-user
 
+    - name: Pull latest images from Docker Hub
+      shell: "/usr/local/bin/docker-compose pull"
+      args:
+        chdir: "{{ project_dir }}"
+      environment:
+        DOCKER_USER: "{{ docker_user }}"
+      become_user: ec2-user
+
     - name: Deploy application
       shell: "/usr/local/bin/docker-compose up -d"
       args:
@@ -60,3 +68,19 @@
       environment:
         DOCKER_USER: "{{ docker_user }}"
       become_user: ec2-user
+
+    - name: Wait for backend service to be ready
+      wait_for:
+        port: 5001
+        delay: 30
+        timeout: 120
+        msg: "Backend service did not start within 2 minutes"
+
+    - name: Seed database with sample data
+      shell: "/usr/local/bin/docker-compose exec -T backend npm run seed"
+      args:
+        chdir: "{{ project_dir }}"
+      environment:
+        DOCKER_USER: "{{ docker_user }}"
+      become_user: ec2-user
+      ignore_errors: yes  # Continue even if seeding fails

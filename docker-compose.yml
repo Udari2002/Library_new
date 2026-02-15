@@ -1,16 +1,28 @@
 version: '3.8'
 
 services:
+  mongodb:
+    image: mongo:latest
+    restart: always
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+    environment:
+      - MONGO_INITDB_DATABASE=library_new
+
   backend:
     build:
       context: ./backend
       dockerfile: Dockerfile
     environment:
-      - MONGO_URI=mongodb://host.docker.internal:27017/library_new
+      - MONGO_URI=mongodb://mongodb:27017/library_new
       - PORT=5001
       - NODE_ENV=development
     ports:
       - "5001:5001"
+    depends_on:
+      - mongodb
     volumes:
       - ./backend:/app
       - /app/node_modules
@@ -28,3 +40,6 @@ services:
     volumes:
       - ./frontend:/app
       - /app/node_modules
+
+volumes:
+  mongo_data:
